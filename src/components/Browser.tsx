@@ -5,9 +5,10 @@ import { useState } from 'react';
 import { useSettingsStore } from '../store/settings';
 import { Search } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
-import { cn } from '../lib/utils';
+import { cn, searchURL } from '../lib/utils';
 
 export function Browser() {
+  const isMac = navigator.userAgent.includes("Mac");
   const { tabs, activeTabId, updateTab, setLoading, addTab } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
   const { searchEngine } = useSettingsStore();
@@ -23,6 +24,39 @@ export function Browser() {
       [tabId]: value,
     }));
   };
+
+  const createIFrame = async (tabId: string) => {
+    const newIFrame = document.createElement("iframe");
+    newIFrame.src = await searchURL(tab, searchEngine);
+    newIFrame.classList = "window h-full w-full";
+    newIFrame.dataset.current = "true";
+    newIFrame.addEventListener("load", (e) => {
+        addKeybinds(e.target.contentWindow);
+        interceptLinks(e.target.contentWindow);
+        setIcon(this.current);
+
+        tab.url = window.__uv$config.decodeUrl(
+            e.target.contentWindow.location.pathname.split(
+                window.__uv$config.prefix,
+            )[1],
+        );
+        if (this.search) {
+            if (this.tabs[this.current].hasOwnProperty("url")) {
+                this.search.value = this.tabs[this.current].url || "";
+            } else {
+                this.search.value = "";
+            }
+        }
+
+        let newTitle = e.target.contentWindow.document.title;
+        if (newTitle !== tab.title) {
+            tab.title = newTitle || tab.url;
+            updateTitles();
+        }
+    });
+    this.windows.appendChild(newIFrame);
+    return newIFrame;
+};
 
   const handleBrowserUrl = (url: string) => {
     const browserUrl = url.toLowerCase();

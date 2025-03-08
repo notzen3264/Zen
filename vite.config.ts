@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { ChemicalVitePlugin } from "chemicaljs";
 
-// https://vitejs.dev/config/
 export default defineConfig({
   base: '/',
-  plugins: [react()],
+  plugins: [
+    [ChemicalVitePlugin({})],
+  ],
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
