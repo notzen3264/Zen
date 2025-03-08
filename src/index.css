@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --theme-crust: #11111b;
+    --theme-base: #1e1e2e;
+    --theme-surface0: #313244;
+    --theme-text: #cdd6f4;
+    --theme-subtext0: #a6adc8;
+    --theme-blue: #89b4fa;
+    
+    color-scheme: dark;
+    @apply box-border list-none p-0 m-0 scroll-smooth;
+  }
+  
+  body {
+    @apply bg-crust text-text overscroll-none;
+    font-family: 'Inter', sans-serif;
+  }
+
+  * {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+@layer components {
+  /* Button styles */
+  .btn-icon {
+    @apply w-10 h-10 text-text bg-base rounded-full hover:bg-surface0 flex items-center justify-center
+           transition-all active:scale-90
+           backdrop-blur-lg active:bg-surface0;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 text-text rounded-lg bg-blue hover:bg-blue
+           transition-all active:scale-95 shadow-lg shadow-blue;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 text-text rounded-lg bg-surface0 hover:bg-surface0
+           transition-all active:scale-95 shadow-lg shadow-surface0;
+  }
+
+  /* Input styles */
+  .input-search {
+    @apply w-full h-10 bg-base transition-all rounded-full pl-12 pr-4
+           text-sm text-text placeholder-subtext0
+           focus:outline-none focus:ring-0 focus:ring-surface0
+           focus:bg-surface0 backdrop-blur-lg;
+  }
+
+  .input-standard {
+    @apply w-full h-12 bg-surface0 rounded-xl px-4
+           text-sm text-text placeholder-subtext0
+           focus:outline-none focus:ring-2 focus:ring-surface0
+           transition-all shadow-lg shadow-surface0;
+  }
+
+  /* Card styles */
+  .card {
+    @apply bg-base rounded-2xl p-6 backdrop-blur-sm;
+  }
+
+  /* Select styles */
+  .select-standard {
+    @apply w-full h-12 bg-surface0 rounded-xl px-4
+           text-sm text-text appearance-none cursor-pointer
+           focus:outline-none active:ring-2 active:ring-surface0;
+  }
+
+  /* Tab styles */
+  .tab-item {
+    @apply max-w-full text-text bg-base h-12 rounded-full transition-all cursor-pointer p-3
+           flex items-center gap-3
+           backdrop-blur-lg will-change-transform active:bg-surface0 active:scale-95;
+  }
+
+  .tab-item-active {
+    @apply bg-surface0;
+  }
+
+  .tab-item-inactive {
+    @apply bg-crust hover:bg-surface0;
+  }
+
+  /* Content frame */
+  .content-frame {
+    @apply w-full h-[calc(100vh-5rem)] rounded-2xl overflow-hidden;
+  }
+
+  /* Settings sidebar */
+  .settings-sidebar {
+    @apply w-64 h-full p-4 space-y-2;
+  }
+
+  .settings-sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-full cursor-pointer transition-all;
+  }
+
+  .settings-sidebar-item-active {
+    @apply bg-surface0 text-text;
+  }
+
+  .settings-sidebar-item-inactive {
+    @apply hover:bg-surface0 text-subtext0;
+  }
+
+  /* Custom dropdown */
+  .dropdown {
+    @apply relative bg-surface0 rounded-2xl;
+  }
+
+  .dropdown-content {
+    @apply absolute top-full left-0 mt-2 w-full bg-base rounded-2xl
+    z-[99999999999] overflow-hidden transition-all duration-200 ease-in-out;
+  }
+
+  .dropdown-item {
+    @apply px-4 py-3 hover:bg-surface0 cursor-pointer transition-all text-subtext0 hover:text-text;
+  }
+}
+
+@layer utilities {
+  /* TYPOGRAPHY */
+  .mega-bold {
+    @apply text-[72px] font-bold leading-[140%] tracking-tighter;
+  }
+
+  .zen-bold {
+    @apply text-[36px] font-bold leading-[140%] tracking-tighter;
+  }
+
+  .h1-bold {
+    @apply text-[36px] font-bold leading-[140%] tracking-tighter text-text;
+  }
+
+  .h1-semibold {
+    @apply text-[36px] font-semibold leading-[140%] tracking-tighter text-text;
+  }
+
+  .h2-bold {
+    @apply text-[30px] font-bold leading-[140%] tracking-tighter text-text;
+  }
+
+  .h3-bold {
+    @apply text-[24px] font-bold leading-[140%] tracking-tighter text-text;
+  }
+
+  .base-semibold {
+    @apply text-[16px] font-semibold leading-[140%] tracking-tighter text-text;
+  }
+
+  .base-medium {
+    @apply text-[16px] font-medium leading-[140%] text-subtext0;
+  }
+
+  .base-regular {
+    @apply text-[16px] font-normal leading-[140%] text-subtext0;
+  }
+
+  .body-bold {
+    @apply text-[18px] font-bold leading-[140%] text-text;
+  }
+
+  .body-medium {
+    @apply text-[18px] font-medium leading-[140%] text-subtext0;
+  }
+
+  .small-semibold {
+    @apply text-[14px] font-semibold leading-[140%] tracking-tighter text-text;
+  }
+
+  .small-medium {
+    @apply text-[14px] font-medium leading-[140%] text-subtext0;
+  }
+
+  .small-regular {
+    @apply text-[14px] font-normal leading-[140%] text-subtext0;
+  }
+
+  .subtle-semibold {
+    @apply text-[12px] font-semibold leading-[140%] text-subtext0;
+  }
+
+  .tiny-medium {
+    @apply text-[10px] font-medium leading-[140%] text-subtext0;
+  }
+}
+
+.glassmorphism {
+  @apply bg-surface0 backdrop-blur-2xl border border-surface0 shadow-lg shadow-surface0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-surface0 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-surface0;
+}
+
+/* Animations */
+@keyframes scale-up {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.scale-up-animation {
+  animation: scale-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Smooth transitions */
+* {
+  @apply transition-colors duration-300;
+}
+
+/* Tab width restriction */
+.tab-title {
+  @apply max-w-[150px] truncate;
+  mask-image: linear-gradient(to left, transparent, black 20px);
+}
+
+.frame {
+  max-height: calc(100vh - 5rem)
+}
+
+/* Theme transitions */
+.theme-transition {
+  @apply transition-all duration-500 ease-in-out;
+}
+
+/* Sidebar collapse animation */
+.sidebar-expanded {
+  width: 280px;
+}
+
+.sidebar-collapsed {
+  display: none;
+}
+
+/* New tab background */
+.new-tab-background {
+  @apply object-cover w-full h-full z-0 absolute;
+}
+
+.space_grotesk {
+  font-family: 'Space Grotesk', sans-serif;
+}

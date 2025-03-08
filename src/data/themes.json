@@ -1,0 +1,69 @@
+{
+  "themes": [
+    {
+      "id": "mocha",
+      "name": "Mocha",
+      "colors": {
+        "crust": "#11111b",
+        "base": "#1e1e2e",
+        "surface0": "#313244",
+        "text": "#cdd6f4",
+        "subtext0": "#a6adc8",
+        "blue": "#89b4fa"
+      },
+      "wallpaper": "/wallpapers/Amethyst_Whirl.png"
+    },
+    {
+      "id": "macchiato",
+      "name": "Macchiato",
+      "colors": {
+        "crust": "#181926",
+        "base": "#24273a",
+        "surface0": "#363a4f",
+        "text": "#cad3f5",
+        "subtext0": "#a5adcb",
+        "blue": "#8aadf4"
+      },
+      "wallpaper": "/wallpapers/midnight.jpg"
+    },
+    {
+      "id": "frappe",
+      "name": "Frappé",
+      "colors": {
+        "crust": "#232634",
+        "base": "#303446",
+        "surface0": "#414559",
+        "text": "#c6d0f5",
+        "subtext0": "#a5adce",
+        "blue": "#8caaee"
+      },
+      "wallpaper": "/wallpapers/forest.jpg"
+    },
+    {
+      "id": "latte",
+      "name": "Latte",
+      "colors": {
+        "crust": "#dce0e8",
+        "base": "#eff1f5",
+        "surface0": "#ccd0da",
+        "text": "#4c4f69",
+        "subtext0": "#6c6f85",
+        "blue": "#1e66f5"
+      },
+      "wallpaper": "/wallpapers/Crystal_Dawn.png"
+    },
+    {
+      "id": "nord",
+      "name": "Nord",
+      "colors": {
+        "crust": "#2e3440",
+        "base": "#3b4252",
+        "surface0": "#4c566a",
+        "text": "#eceff4",
+        "subtext0": "#d8dee9",
+        "blue": "#88c0d0"
+      },
+      "wallpaper": "/wallpapers/nord.jpg"
+    }
+  ]
+}
