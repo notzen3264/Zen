@@ -5,7 +5,6 @@ import { useSettingsStore } from '../store/settings';
 
 export function AddressBar() {
   const isMac = navigator.userAgent.includes("Mac");
-  // Destructure proxyEngine along with other settings
   const { searchEngine, sidebarVisible, toggleSidebar, proxyEngine } = useSettingsStore();
   const { tabs, activeTabId, updateTab, setLoading, addTab, setActiveTab } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
@@ -25,19 +24,40 @@ export function AddressBar() {
   };
 
   useEffect(() => {
-    if (!activeTabId) return;
-    if (activeTab?.url?.startsWith('https://')) {
-      setInputs(prev => ({ ...prev, [activeTabId]: activeTab.url }));
-      setIsSecure(true);
-    } else if (activeTab?.url?.startsWith('http://')) {
-      setInputs(prev => ({ ...prev, [activeTabId]: activeTab.url }));
-      setIsSecure(false);
-    } else {
+    if (!activeTabId || !activeTab?.url) {
       setInputs(prev => ({
         ...prev,
-        [activeTabId]: activeTab?.url === 'about:blank' ? '' : (activeTab?.url || '')
+        [activeTabId || '']: ''
       }));
       setIsSecure(null);
+      return;
+    }
+    
+    // For internal URLs, show them as is
+    if (activeTab.url.startsWith('zen://') || activeTab.url === 'about:blank') {
+      setInputs(prev => ({
+        ...prev,
+        [activeTabId]: activeTab.url === 'about:blank' ? '' : activeTab.url
+      }));
+      setIsSecure(null);
+      return;
+    }
+
+    try {s
+      const decodedUrl = window.chemical?.decode?.(activeTab.url) || activeTab.url;
+      
+      if (decodedUrl.startsWith('https://')) {
+        setIsSecure(true);
+      } else if (decodedUrl.startsWith('http://')) {
+        setIsSecure(false);
+      } else {
+        setIsSecure(null);
+      }
+
+      setInputs(prev => ({ ...prev, [activeTabId]: decodedUrl }));
+    } catch (error) {
+      // If decoding fails, show the URL as is
+      setInputs(prev => ({ ...prev, [activeTabId]: activeTab.url }));
     }
   }, [activeTab?.url, activeTabId]);
 
@@ -65,14 +85,12 @@ export function AddressBar() {
     if (!window.chemical) return url;
 
     try {
-      // Configure Chemical.js options
       const options = {
-        service: proxyEngine, // Use the selected proxy engine from settings
+        service: proxyEngine,
         autoHttps: true,
         searchEngine: getSearchUrl(searchEngine)
       };
 
-      // Encode the URL using Chemical.js
       const encodedUrl = await window.chemical.encode(url, options);
       return encodedUrl;
     } catch (error) {
@@ -82,6 +100,8 @@ export function AddressBar() {
   };
 
   const handleBrowserUrl = (url: string) => {
+    if (!url) return false;
+    
     const browserUrl = url.toLowerCase();
 
     switch (browserUrl) {
@@ -118,6 +138,8 @@ export function AddressBar() {
   };
 
   const normalizeUrl = (url: string): string => {
+    if (!url) return '';
+    
     if (url.toLowerCase().startsWith('zen://')) {
       return url.toLowerCase();
     }
@@ -140,19 +162,23 @@ export function AddressBar() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeTabId || !inputs[activeTabId]) return;
+    if (!activeTabId) return;
 
-    let url = inputs[activeTabId];
+    const inputUrl = inputs[activeTabId] || '';
+    if (!inputUrl.trim()) return;
+
+    let url = inputUrl;
 
     if (url.toLowerCase().startsWith('zen://')) {
       if (handleBrowserUrl(url)) return;
     }
 
+    // Handle search queries vs URLs
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       if (url.includes('.') && !url.includes(' ')) {
         url = normalizeUrl(url);
       } else {
-        const searchUrls: { [key: string]: string } = {
+        const searchUrls = {
           google: 'https://www.google.com/search?q=',
           duckduckgo: 'https://duckduckgo.com/?q=',
           bing: 'https://www.bing.com/search?q=',
@@ -164,9 +190,9 @@ export function AddressBar() {
     setLoading(activeTabId, true);
 
     try {
-      // Use the encodeUrl helper to get the encoded URL
-      const encodedUrl = await encodeUrl(url);
-      console.log(encodedUrl);
+      // Encode the URL using Chemical.js
+      const encodedUrl = await window.chemical.encode(url);
+      console.log(encodedUrl)
       const favicon = `https://www.google.com/s2/favicons?domain=${url}&sz=128`;
 
       updateTab(activeTabId, {
@@ -174,64 +200,10 @@ export function AddressBar() {
         title: url,
         favicon,
       });
+
     } finally {
       setLoading(activeTabId, false);
     }
-  };
-
-  const handleIframeLoad = (iframe: HTMLIFrameElement) => {
-    if (!iframe.contentWindow) return;
-
-    const win = iframe.contentWindow;
-
-    // Back navigation
-    win.addEventListener('keyup', (e: KeyboardEvent) => {
-      if ((isMac ? e.metaKey : e.altKey) && e.key === 'ArrowLeft') {
-        win.history.back();
-      }
-    });
-
-    // Forward navigation
-    win.addEventListener('keyup', (e: KeyboardEvent) => {
-      if ((isMac ? e.metaKey : e.altKey) && e.key === 'ArrowRight') {
-        win.history.forward();
-      }
-    });
-
-    // Reload page
-    win.addEventListener('keyup', (e: KeyboardEvent) => {
-      if ((isMac ? e.metaKey : e.altKey) && e.key === 'r') {
-        win.location.reload();
-      }
-    });
-
-    // Update tab info on navigation
-    const updateTabInfo = async () => {
-      if (!activeTabId || !win.location.href) return;
-
-      try {
-        const url = win.location.href;
-        const title = win.document.title;
-        const favicon =
-          win.document.querySelector("link[rel*='icon']")?.href ||
-          win.document.querySelector("link[rel='shortcut icon']")?.href ||
-          `https://www.google.com/s2/favicons?domain=${url}&sz=128`;
-
-        // Re-encode the URL if needed
-        const encodedUrl = await encodeUrl(url);
-
-        updateTab(activeTabId, {
-          url: encodedUrl,
-          title: title || url,
-          favicon,
-        });
-      } catch (error) {
-        console.error('Error updating tab info:', error);
-      }
-    };
-
-    win.addEventListener('popstate', updateTabInfo);
-    win.addEventListener('load', updateTabInfo);
   };
 
   return (

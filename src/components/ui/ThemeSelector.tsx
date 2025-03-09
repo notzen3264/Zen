@@ -10,7 +10,7 @@ export function ThemeSelector() {
     let icon;
     switch (theme.id) {
       case 'dark':
-        icon = <Moon className="w-4 h-4" />;
+        icon = <Moon className="w-4 h-4 text-text" />;
         break;
       case 'midnight':
         icon = <Moon className="w-4 h-4 text-blue-400" />;
@@ -22,7 +22,7 @@ export function ThemeSelector() {
         icon = <Leaf className="w-4 h-4 text-green-400" />;
         break;
       default:
-        icon = <Palette className="w-4 h-4" />;
+        icon = <Palette className="w-4 h-4 text-text invert-text" />;
     }
     
     return {
