@@ -11,15 +11,6 @@ function App() {
       url: 'about:blank',
       title: 'New Tab',
     });
-
-    if ('serviceWorker' in navigator) {
-      console.log("service worker");
-      navigator.serviceWorker.register('/uv/sw.js', {
-        scope: '/uv/service',
-        type: 'classic',
-        updateViaCache: 'none'
-      }).catch(console.error);
-    }
   }, [addTab]);
 
   return (

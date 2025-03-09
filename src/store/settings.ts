@@ -1,12 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-declare global {
-  interface Window {
-    chemical: any;
-  }
-}
-
 type ProxyEngine = 'ultraviolet' | 'rammerhead' | 'scramjet';
 type ProxyTransport = 'libcurl' | 'epoxy';
 
