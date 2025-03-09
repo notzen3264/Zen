@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Lock, ChevronLeft, ChevronRight, RotateCw, ShieldAlert, Settings, PanelLeft } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, RotateCw, UnlockKeyhole, Settings, PanelLeft, LockKeyhole } from 'lucide-react';
 import { useBrowserStore } from '../store/browser';
 import { useSettingsStore } from '../store/settings';
 
@@ -43,18 +43,19 @@ export function AddressBar() {
       return;
     }
 
-    try {s
-      const decodedUrl = window.chemical?.decode?.(activeTab.url) || activeTab.url;
+    try {
+      // Try to decode the URL if it's encoded
+      const currentUrl = activeTab.url || activeTab.url;
       
-      if (decodedUrl.startsWith('https://')) {
+      if (currentUrl.startsWith('https://')) {
         setIsSecure(true);
-      } else if (decodedUrl.startsWith('http://')) {
+      } else if (currentUrl.startsWith('http://')) {
         setIsSecure(false);
       } else {
         setIsSecure(null);
       }
 
-      setInputs(prev => ({ ...prev, [activeTabId]: decodedUrl }));
+      setInputs(prev => ({ ...prev, [activeTabId]: currentUrl }));
     } catch (error) {
       // If decoding fails, show the URL as is
       setInputs(prev => ({ ...prev, [activeTabId]: activeTab.url }));
@@ -192,11 +193,11 @@ export function AddressBar() {
     try {
       // Encode the URL using Chemical.js
       const encodedUrl = await window.chemical.encode(url);
-      console.log(encodedUrl)
       const favicon = `https://www.google.com/s2/favicons?domain=${url}&sz=128`;
 
       updateTab(activeTabId, {
-        url: encodedUrl,
+        url: url,
+        iframeUrl: encodedUrl,
         title: url,
         favicon,
       });
@@ -214,17 +215,18 @@ export function AddressBar() {
             onClick={toggleSidebar}
             className="btn-icon"
             title="Show Sidebar"
+            aria-label="Toggle Sidebar"
           >
             <PanelLeft className="w-5 h-5" />
           </button>
         )}
-        <button className="btn-icon xs:hidden sm:flex">
+        <button className="btn-icon xs:hidden sm:flex" aria-label="Back">
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <button className="btn-icon xs:hidden sm:flex">
+        <button className="btn-icon xs:hidden sm:flex" aria-label="Forward">
           <ChevronRight className="w-5 h-5" />
         </button>
-        <button className="btn-icon xs:hidden sm:flex">
+        <button className="btn-icon xs:hidden sm:flex" aria-label="Reload">
           <RotateCw className="w-4 h-4" />
         </button>
       </div>
@@ -235,9 +237,9 @@ export function AddressBar() {
             {isSecure === null ? (
               <Search className="h-4 w-4 text-text group-focus-within:text-text" />
             ) : isSecure ? (
-              <Lock className="h-4 w-4 text-green-500 group-focus-within:text-green-400" />
+              <LockKeyhole className="h-4 w-4 text-green-500 group-focus-within:text-green-400" />
             ) : (
-              <ShieldAlert className="h-4 w-4 text-red-500 group-focus-within:text-red-400" />
+              <UnlockKeyhole className="h-4 w-4 text-red-500 group-focus-within:text-red-400" />
             )}
           </div>
           <input
@@ -246,12 +248,14 @@ export function AddressBar() {
             onChange={(e) => handleInputChange(activeTabId || '', e.target.value)}
             className="input-search"
             placeholder="Search the web or enter URL"
+            aria-label="Address Bar"
           />
         </div>
       </form>
       <button
         onClick={handleSettingsClick}
         className="btn-icon xs:hidden sm:flex"
+        aria-label="Settings"
       >
         <Settings className="w-5 h-5" />
       </button>

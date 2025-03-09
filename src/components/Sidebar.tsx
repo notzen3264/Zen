@@ -50,15 +50,15 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
         isDragging ? "shadow-xl bg-surface0 transition-colors" : "",
         activeTabId === tab.id ? "tab-item-active" : "tab-item-inactive"
       )}
+      aria-label="Tab"
     >
       <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-surface0 ml-1">
-        {/* Favicon Image */}
         {!faviconError && tab.favicon && tab.url !== "zen://settings" ? (
           <img
             src={tab.favicon}
             alt=""
             className="w-4 h-4 rounded-lg"
-            onError={() => setFaviconError(true)} // Mark favicon as failed
+            onError={() => setFaviconError(true)}
           />
         ) : tab.url === "zen://settings" ? (
           <Settings className="w-4 h-4 invert-text" />
@@ -74,8 +74,8 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
           e.stopPropagation();
           onRemove(tab.id);
         }}
-        className="opacity-0 hover:opacity-100 p-1.5 rounded-full
-                 transition-all hover:scale-110 active:scale-90 flex-shrink-0"
+        className="opacity-0 hover:opacity-100 p-1.5 rounded-full transition-all hover:scale-110 active:scale-90 flex-shrink-0"
+        aria-label="Close Tab"
       >
         <X className="w-4 h-4" />
       </button>
@@ -109,25 +109,27 @@ export function Sidebar() {
         sidebarVisible ? "w-[280px]" : "w-0 overflow-hidden"
       )}
     >
-      <div className="flex-1 pt-6 flex flex-col w-full">
+      <div className="h-full pt-6 flex flex-col w-full text-text">
         <div className="px-3 mb-2 flex items-center justify-between">
           <button
             onClick={toggleSidebar}
             className="btn-icon mr-1 w-12 h-12"
             title="Toggle Sidebar"
+            aria-label="Toggle Sidebar"
           >
-            <PanelLeft className="w-5 h-5" />
+            <PanelLeft className="w-5 h-5 text-text" />
           </button>
           <button
             onClick={() => addTab({ url: 'about:blank', title: 'New Tab' })}
             className="h-12 bg-base rounded-full min-w-0 flex-grow transition-all hover:bg-surface0 flex items-center gap-2 px-3 text-text active:scale-95"
+            aria-label="New Tab"
           >
-            <Plus className="w-6 h-6" />
+            <Plus className="w-6 h-6 text-text" />
             <p className="base-semibold text-text">New Tab</p>
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 space-y-2 pb-6">
+        <div className="h-full overflow-y-auto px-3 space-y-2 pb-6 min-w-0">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={tabs} strategy={verticalListSortingStrategy}>
               {tabs.map((tab) => (

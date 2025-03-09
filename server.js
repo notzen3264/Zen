@@ -11,7 +11,16 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const [app, listen] = new ChemicalServer();
+const [app, listen] = new ChemicalServer({
+    default: "uv",
+    uv: true,
+    rammerhead: true,
+    experimental: {
+        scramjet: true,
+        meteor: true,
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 const viteDistPath = path.join(__dirname, "dist");
 const publicPath = path.join(__dirname, "public");
@@ -26,7 +35,7 @@ app.disable("x-powered-by");
 app.use(
     RateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 64000,
+        max: 1000,
     })
 );
 

@@ -14,7 +14,7 @@ function App() {
   }, [addTab]);
 
   return (
-    <div className="flex h-screen transition-colors rounded-2xl text-text bg-crust">
+    <div className="flex h-screen transition-colors text-text bg-crust">
       <Sidebar />
       <Browser />
     </div>

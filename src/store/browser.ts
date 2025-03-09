@@ -2,7 +2,8 @@ import { create } from 'zustand';
 
 interface Tab {
   id: string;
-  url: string;
+  url: string;          // Original, unencoded URL
+  iframeUrl: string;    // Encoded URL for iframe
   title: string;
   favicon?: string;
   loading?: boolean;
@@ -11,19 +12,27 @@ interface Tab {
 interface BrowserState {
   tabs: Tab[];
   activeTabId: string | null;
-  addTab: (tab: Omit<Tab, 'id'>) => void;
+  bookmarks: Array<{ id: string; url: string; title: string; favicon?: string }>;
+  addTab: (tab: Omit<Tab, 'id' | 'iframeUrl'>) => void;
   removeTab: (id: string) => void;
   updateTab: (id: string, updates: Partial<Tab>) => void;
   setActiveTab: (id: string) => void;
   setLoading: (id: string, loading: boolean) => void;
   reorderTabs: (newTabs: Tab[]) => void;
+  addBookmark: (bookmark: { url: string; title: string; favicon?: string }) => void;
+  removeBookmark: (id: string) => void;
 }
 
 export const useBrowserStore = create<BrowserState>((set) => ({
   tabs: [],
   activeTabId: null,
+  bookmarks: [],
   addTab: (tab) => set((state) => {
-    const newTab = { ...tab, id: Math.random().toString(36).slice(2) };
+    const newTab = { 
+      ...tab, 
+      id: Math.random().toString(36).slice(2),
+      iframeUrl: tab.url // Will be encoded when actually loading
+    };
     return {
       tabs: [newTab, ...state.tabs],
       activeTabId: newTab.id,
@@ -47,4 +56,10 @@ export const useBrowserStore = create<BrowserState>((set) => ({
     ),
   })),
   reorderTabs: (newTabs) => set({ tabs: newTabs }),
+  addBookmark: (bookmark) => set((state) => ({
+    bookmarks: [...state.bookmarks, { id: Math.random().toString(36).slice(2), ...bookmark }]
+  })),
+  removeBookmark: (id) => set((state) => ({
+    bookmarks: state.bookmarks.filter((b) => b.id !== id)
+  }))
 }));

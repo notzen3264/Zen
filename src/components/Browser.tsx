@@ -167,7 +167,8 @@ export function Browser() {
       const favicon = `https://www.google.com/s2/favicons?domain=${url}&sz=128`;
 
       updateTab(activeTabId, {
-        url: encodedUrl,
+        url: url,
+        iframeUrl: encodedUrl,
         title: url,
         favicon,
       });
@@ -270,7 +271,7 @@ export function Browser() {
     return (
       <iframe
         key={activeTab.id}
-        src={activeTab.url}
+        src={activeTab.iframeUrl}
         className={cn(
           "w-full h-full rounded-2xl border-none transition-opacity duration-300 z-50",
           activeTab.loading && "animate-pulse"

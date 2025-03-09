@@ -24,7 +24,7 @@
         "subtext0": "#a5adcb",
         "blue": "#8aadf4"
       },
-      "wallpaper": "/wallpapers/midnight.jpg"
+      "wallpaper": "/wallpapers/Midnight_Maelstrom.png"
     },
     {
       "id": "frappe",
@@ -37,7 +37,7 @@
         "subtext0": "#a5adce",
         "blue": "#8caaee"
       },
-      "wallpaper": "/wallpapers/forest.jpg"
+      "wallpaper": "/wallpapers/Oceanic_Aurora.png"
     },
     {
       "id": "latte",
@@ -63,7 +63,20 @@
         "subtext0": "#d8dee9",
         "blue": "#88c0d0"
       },
-      "wallpaper": "/wallpapers/nord.jpg"
+      "wallpaper": "/wallpapers/celestial.png"
+    },
+    {
+      "id": "rose",
+      "name": "Rose",
+      "colors": {
+        "crust": "#24171c",
+        "base": "#2e1d24",
+        "surface0": "#3b232d",
+        "text": "#f5dfe8",
+        "subtext0": "#ab8c98",
+        "blue": "#cf5986"
+      },
+      "wallpaper": "/wallpapers/Rose_Drift.png"
     }
   ]
 }
