@@ -5,8 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export default setIcon;
-
 export function encodeXor(str: string) {
   if (!str) return str;
   return encodeURIComponent(

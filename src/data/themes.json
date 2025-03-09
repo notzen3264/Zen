@@ -77,6 +77,58 @@
         "blue": "#cf5986"
       },
       "wallpaper": "/wallpapers/Rose_Drift.png"
+    },
+    {
+      "id": "rose-pine",
+      "name": "Rosé Pine",
+      "colors": {
+        "crust": "#191724",
+        "base": "#1f1d2e",
+        "surface0": "#26233a",
+        "text": "#e0def4",
+        "subtext0": "#908caa",
+        "blue": "#ebbcba"
+      },
+      "wallpaper": "/wallpapers/Tropical_Bloom.png"
+    },
+    {
+      "id": "moss",
+      "name": "Moss",
+      "colors": {
+        "crust": "#212121",
+        "base": "#2f2f2f",
+        "surface0": "#444444",
+        "text": "#ececec",
+        "subtext0": "#9b9b9b",
+        "blue": "#4caf50"
+      },
+      "wallpaper": "/wallpapers/Verdant_Orbs.png"
+    },
+    {
+      "id": "gruvbox",
+      "name": "Gruvbox",
+      "colors": {
+        "crust": "#282828",
+        "base": "#3c3836",
+        "surface0": "#504945",
+        "text": "#fbf1c7",
+        "subtext0": "#d5c4a1",
+        "blue": "#ebdbb2"
+      },
+      "wallpaper": "/wallpapers/Gruvbox.jpg"
+    },
+    {
+      "id": "night",
+      "name": "Night",
+      "colors": {
+        "crust": "#0d1117",
+        "base": "#161b22",
+        "surface0": "#21262d",
+        "text": "#c9d1d9",
+        "subtext0": "#8b949e",
+        "blue": "#58a6ff"
+      },
+      "wallpaper": "/wallpapers/Night.jpg"
     }
   ]
 }
