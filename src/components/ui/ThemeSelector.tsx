@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown } from './Dropdown';
 import { useTheme } from '../../hooks/useTheme';
-import { Moon, Sunset, Leaf, Palette, Coffee, CupSoda, MountainSnow, Flower, TreePine, Shrub, History } from 'lucide-react';
+import { Moon, Sunset, Leaf, Palette, Coffee, CupSoda, MountainSnow, Flower, TreePine, Shrub, History, Sun } from 'lucide-react';
 
 export function ThemeSelector() {
   const { themes, currentTheme, setTheme } = useTheme();
@@ -38,6 +38,9 @@ export function ThemeSelector() {
         break;
       case 'night':
         icon = <Moon className="w-4 h-4" style={{ color: theme.colors.blue }} />;
+        break;
+      case 'sunny':
+        icon = <Sun className="w-4 h-4" style={{ color: theme.colors.blue }} />;
         break;
       default:
         icon = <Palette className="w-4 h-4" style={{ color: theme.colors.blue }} />;

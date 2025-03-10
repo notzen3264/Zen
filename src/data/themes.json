@@ -129,6 +129,19 @@
         "blue": "#58a6ff"
       },
       "wallpaper": "/wallpapers/Night.jpg"
+    },
+    {
+      "id": "sunny",
+      "name": "Sunny",
+      "colors": {
+        "crust": "#e8e6dc",
+        "base": "#f5f5f0",
+        "surface0": "#d9d7cc",
+        "text": "#69634a",
+        "subtext0": "#85806a",
+        "blue": "#ad9715"
+      },
+      "wallpaper": "/wallpapers/Sunny.jpg"
     }
   ]
 }

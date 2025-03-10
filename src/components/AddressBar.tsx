@@ -257,7 +257,7 @@ export function AddressBar() {
         className="btn-icon xs:hidden sm:flex"
         aria-label="Settings"
       >
-        <Settings className="w-5 h-5" />
+        <Settings className="w-5 h-5 text-text" />
       </button>
     </div>
   );
