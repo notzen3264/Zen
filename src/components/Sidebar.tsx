@@ -110,10 +110,10 @@ export function Sidebar() {
       )}
     >
       <div className="h-full pt-6 flex flex-col w-full text-text">
-        <div className="px-3 mb-2 flex items-center justify-between">
+        <div className="px-3 mb-2 flex items-center justify-between gap-1">
           <button
             onClick={toggleSidebar}
-            className="btn-icon mr-1 w-12 h-12"
+            className="btn-icon w-12 h-12"
             title="Toggle Sidebar"
             aria-label="Toggle Sidebar"
           >

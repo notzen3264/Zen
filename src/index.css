@@ -90,7 +90,7 @@
 
   /* Content frame */
   .content-frame {
-    @apply w-full h-[calc(100vh-5rem)] rounded-2xl overflow-hidden;
+    @apply w-full h-[calc(100vh-5rem)] rounded-2xl overflow-hidden p-2 pt-0;
   }
 
   /* Settings sidebar */
@@ -190,10 +190,6 @@
   .tiny-medium {
     @apply text-[10px] font-medium leading-[140%] text-subtext0;
   }
-}
-
-.glassmorphism {
-  @apply bg-surface0 backdrop-blur-2xl border border-surface0 shadow-lg shadow-surface0;
 }
 
 /* Custom scrollbar */
