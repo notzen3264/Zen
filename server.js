@@ -35,7 +35,7 @@ app.disable("x-powered-by");
 app.use(
     RateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 1000,
+        max: 5000,
     })
 );
 
