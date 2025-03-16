@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Search, ChevronLeft, ChevronRight, RotateCw, UnlockKeyhole, Settings, PanelLeft, LockKeyhole } from 'lucide-react';
 import { useBrowserStore } from '../store/browser';
 import { useSettingsStore } from '../store/settings';
+import { encodeUrl, normalizeUrl } from '../lib/utils';
 
 export function AddressBar() {
   const isMac = navigator.userAgent.includes("Mac");
-  const { searchEngine, sidebarVisible, toggleSidebar, proxyEngine } = useSettingsStore();
+  const { searchEngine, sidebarVisible, toggleSidebar, service } = useSettingsStore();
   const { tabs, activeTabId, updateTab, setLoading, addTab, setActiveTab } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
   const [inputs, setInputs] = useState<{ [key: string]: string }>({});
@@ -32,8 +33,7 @@ export function AddressBar() {
       setIsSecure(null);
       return;
     }
-    
-    // For internal URLs, show them as is
+  
     if (activeTab.url.startsWith('zen://') || activeTab.url === 'about:blank') {
       setInputs(prev => ({
         ...prev,
@@ -44,7 +44,6 @@ export function AddressBar() {
     }
 
     try {
-      // Try to decode the URL if it's encoded
       const currentUrl = activeTab.url || activeTab.url;
       
       if (currentUrl.startsWith('https://')) {
@@ -57,7 +56,6 @@ export function AddressBar() {
 
       setInputs(prev => ({ ...prev, [activeTabId]: currentUrl }));
     } catch (error) {
-      // If decoding fails, show the URL as is
       setInputs(prev => ({ ...prev, [activeTabId]: activeTab.url }));
     }
   }, [activeTab?.url, activeTabId]);
@@ -67,37 +65,6 @@ export function AddressBar() {
       ...prevInputs,
       [tabId]: value,
     }));
-  };
-
-  const getSearchUrl = (engine: string) => {
-    switch (engine) {
-      case 'google':
-        return 'https://www.google.com/search?q=%s';
-      case 'duckduckgo':
-        return 'https://duckduckgo.com/?q=%s';
-      case 'bing':
-        return 'https://www.bing.com/search?q=%s';
-      default:
-        return 'https://www.google.com/search?q=%s';
-    }
-  };
-
-  const encodeUrl = async (url: string): Promise<string> => {
-    if (!window.chemical) return url;
-
-    try {
-      const options = {
-        service: proxyEngine,
-        autoHttps: true,
-        searchEngine: getSearchUrl(searchEngine)
-      };
-
-      const encodedUrl = await window.chemical.encode(url, options);
-      return encodedUrl;
-    } catch (error) {
-      console.error('Error encoding URL:', error);
-      return url;
-    }
   };
 
   const handleBrowserUrl = (url: string) => {
@@ -111,14 +78,6 @@ export function AddressBar() {
           updateTab(activeTabId, {
             url: browserUrl,
             title: 'Settings',
-            favicon:
-              'data:image/svg+xml,' +
-              encodeURIComponent(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          `),
           });
         }
         return true;
@@ -138,29 +97,6 @@ export function AddressBar() {
     }
   };
 
-  const normalizeUrl = (url: string): string => {
-    if (!url) return '';
-    
-    if (url.toLowerCase().startsWith('zen://')) {
-      return url.toLowerCase();
-    }
-
-    url = url.trim();
-    if (url.includes(' ')) return url;
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      url = 'https://' + url;
-    }
-
-    try {
-      const testUrl = new URL(url);
-      return testUrl.toString();
-    } catch {
-      console.error('Invalid URL:', url);
-      return url;
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeTabId) return;
@@ -174,7 +110,6 @@ export function AddressBar() {
       if (handleBrowserUrl(url)) return;
     }
 
-    // Handle search queries vs URLs
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       if (url.includes('.') && !url.includes(' ')) {
         url = normalizeUrl(url);
@@ -191,19 +126,13 @@ export function AddressBar() {
     setLoading(activeTabId, true);
 
     try {
-      // Encode the URL using Chemical.js
-      const encodedUrl = await window.chemical.encode(url);
-      const favicon = `https://www.google.com/s2/favicons?domain=${url}&sz=128`;
+      const encodedUrl = await encodeUrl(url, searchEngine, window.chemical.getStore("service"));
 
-      updateTab(activeTabId, {
-        url: url,
-        iframeUrl: encodedUrl,
-        title: url,
-        favicon,
-      });
+      console.log(encodedUrl);
 
-    } finally {
-      setLoading(activeTabId, false);
+      updateTab(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
+    } catch (error) {
+      console.error("Error Loading Web Content", error);
     }
   };
 
@@ -232,7 +161,7 @@ export function AddressBar() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex-1">
-        <div className="relative group">
+        <div className="relative group active:scale-[0.99] transition-transform">
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
             {isSecure === null ? (
               <Search className="h-4 w-4 text-text group-focus-within:text-text" />

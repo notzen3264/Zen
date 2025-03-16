@@ -47,23 +47,23 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
       onClick={onClick}
       className={cn(
         "tab-item",
-        isDragging ? "shadow-xl bg-surface0 transition-colors" : "",
+        isDragging ? "shadow-lg bg-surface0 transition-colors" : "",
         activeTabId === tab.id ? "tab-item-active" : "tab-item-inactive"
       )}
       aria-label="Tab"
     >
-      <div className="w-6 h-6 rounded-lg flex items-center justify-center bg-surface0 ml-1">
+      <div className="w-6 h-6 rounded-full flex items-center justify-center bg-surface0">
         {!faviconError && tab.favicon && tab.url !== "zen://settings" ? (
           <img
             src={tab.favicon}
             alt=""
-            className="w-4 h-4 rounded-lg"
+            className="w-4 h-4"
             onError={() => setFaviconError(true)}
           />
         ) : tab.url === "zen://settings" ? (
-          <Settings className="w-4 h-4 invert-text" />
+          <Settings className="w-4 h-4 text-text" />
         ) : (
-          <Globe className="w-4 h-4" />
+          <Globe className="w-4 h-4 text-text" />
         )}
       </div>
       <span className="flex-1 text-sm truncate" title={tab.title}>
@@ -74,8 +74,9 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
           e.stopPropagation();
           onRemove(tab.id);
         }}
-        className="opacity-0 hover:opacity-100 p-1.5 rounded-full transition-all hover:scale-110 active:scale-90 flex-shrink-0"
+        className="btn-close-tab"
         aria-label="Close Tab"
+        title="Close Tab"
       >
         <X className="w-4 h-4" />
       </button>
@@ -109,8 +110,8 @@ export function Sidebar() {
         sidebarVisible ? "w-[280px]" : "w-0 overflow-hidden"
       )}
     >
-      <div className="h-full pt-6 flex flex-col w-full text-text">
-        <div className="px-3 mb-2 flex items-center justify-between gap-1">
+      <div className="h-full flex flex-col w-full text-text">
+        <div className="pr-3 pb-3 pt-5 pl-5 flex items-center justify-between gap-1">
           <button
             onClick={toggleSidebar}
             className="btn-icon w-12 h-12"
@@ -121,11 +122,12 @@ export function Sidebar() {
           </button>
           <button
             onClick={() => addTab({ url: 'about:blank', title: 'New Tab' })}
-            className="h-12 bg-base rounded-full min-w-0 flex-grow transition-all hover:bg-surface0 flex items-center gap-2 px-3 text-text active:scale-95"
+            className="btn-add-new-tab"
             aria-label="New Tab"
+            title="New Tab"
           >
             <Plus className="w-6 h-6 text-text" />
-            <p className="base-semibold text-text">New Tab</p>
+            <p className="base-semibold">New Tab</p>
           </button>
         </div>
 
@@ -139,6 +141,8 @@ export function Sidebar() {
                   activeTabId={activeTabId}
                   onRemove={removeTab}
                   onClick={() => setActiveTab(tab.id)}
+                  aria-label="Tab"
+                  title="Tab"
                 />
               ))}
             </SortableContext>
