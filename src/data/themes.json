@@ -11,7 +11,7 @@
         "subtext0": "#a6adc8",
         "blue": "#89b4fa"
       },
-      "wallpaper": "/wallpapers/Violet_Droplets.png"
+      "wallpaper": "/wallpapers/Violet_Droplets.jpg"
     },
     {
       "id": "macchiato",
@@ -24,7 +24,7 @@
         "subtext0": "#a5adcb",
         "blue": "#8aadf4"
       },
-      "wallpaper": "/wallpapers/Midnight_Maelstrom.png"
+      "wallpaper": "/wallpapers/Midnight_Maelstrom.jpg"
     },
     {
       "id": "frappe",
@@ -37,7 +37,7 @@
         "subtext0": "#a5adce",
         "blue": "#8caaee"
       },
-      "wallpaper": "/wallpapers/Oceanic_Aurora.png"
+      "wallpaper": "/wallpapers/Oceanic_Aurora.jpg"
     },
     {
       "id": "latte",
@@ -50,7 +50,7 @@
         "subtext0": "#6c6f85",
         "blue": "#1e66f5"
       },
-      "wallpaper": "/wallpapers/Crystal_Dawn.png"
+      "wallpaper": "/wallpapers/Crystal_Dawn.jpg"
     },
     {
       "id": "nord",
@@ -63,7 +63,7 @@
         "subtext0": "#d8dee9",
         "blue": "#88c0d0"
       },
-      "wallpaper": "/wallpapers/celestial.png"
+      "wallpaper": "/wallpapers/celestial.jpg"
     },
     {
       "id": "rose",
@@ -76,7 +76,7 @@
         "subtext0": "#ab8c98",
         "blue": "#cf5986"
       },
-      "wallpaper": "/wallpapers/Rose_Drift.png"
+      "wallpaper": "/wallpapers/Rose_Drift.jpg"
     },
     {
       "id": "rose-pine",
@@ -89,7 +89,7 @@
         "subtext0": "#908caa",
         "blue": "#ebbcba"
       },
-      "wallpaper": "/wallpapers/Tropical_Bloom.png"
+      "wallpaper": "/wallpapers/Tropical_Bloom.jpg"
     },
     {
       "id": "moss",
@@ -102,7 +102,7 @@
         "subtext0": "#9b9b9b",
         "blue": "#4caf50"
       },
-      "wallpaper": "/wallpapers/Verdant_Orbs.png"
+      "wallpaper": "/wallpapers/Verdant_Orbs.jpg"
     },
     {
       "id": "gruvbox",

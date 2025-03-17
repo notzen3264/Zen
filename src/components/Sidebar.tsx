@@ -47,27 +47,30 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
       onClick={onClick}
       className={cn(
         "tab-item",
-        isDragging ? "shadow-lg bg-surface0 transition-colors" : "",
+        tab.loading ? "animate-pulse" : "",
+        isDragging ? "tab-item-dragging" : "",
         activeTabId === tab.id ? "tab-item-active" : "tab-item-inactive"
       )}
-      aria-label="Tab"
+      aria-label="tab"
     >
-      <div className="w-6 h-6 rounded-full flex items-center justify-center bg-surface0">
+      <div className="tab-item-favicon">
         {!faviconError && tab.favicon && tab.url !== "zen://settings" ? (
           <img
             src={tab.favicon}
-            alt=""
+            alt={tab.url}
+            aria-label={tab.url}
+            title={tab.url}
             className="w-4 h-4"
             onError={() => setFaviconError(true)}
           />
         ) : tab.url === "zen://settings" ? (
-          <Settings className="w-4 h-4 text-text" />
+          <Settings className="w-4 h-4 icon" aria-label="Settings"/>
         ) : (
-          <Globe className="w-4 h-4 text-text" />
+          <Globe className="w-4 h-4 icon" aria-label="Globe"/>
         )}
       </div>
-      <span className="flex-1 text-sm truncate" title={tab.title}>
-        {tab.title || 'New Tab'}
+      <span className="tab-item-title" title={tab.title || tab.url} aria-label={tab.title || tab.url}>
+        {tab.title || tab.url}
       </span>
       <button
         onClick={(e) => {
@@ -78,7 +81,7 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
         aria-label="Close Tab"
         title="Close Tab"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4 icon" />
       </button>
     </div>
   );
@@ -106,12 +109,12 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "h-full transition-all duration-300 ease-in-out",
+        "tab-sidebar",
         sidebarVisible ? "w-[280px]" : "w-0 overflow-hidden"
       )}
     >
       <div className="h-full flex flex-col w-full text-text">
-        <div className="pr-3 pb-3 pt-5 pl-5 flex items-center justify-between gap-1">
+        <div className="pr-3 pb-3 pt-5 pl-3 flex items-center justify-between gap-1">
           <button
             onClick={toggleSidebar}
             className="btn-icon w-12 h-12"

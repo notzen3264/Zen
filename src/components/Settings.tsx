@@ -41,9 +41,9 @@ export function Settings() {
   }, []);
 
   const serviceOptions = [
-    { value: 'uv', label: 'Ultraviolet', icon: <img src='/public/icons/ultraviolet.png' className="w-4 h-4"/> },
-    { value: 'rh', label: 'Rammerhead', icon: <img src='/public/icons/rammerhead.png' className="w-4 h-4"/> },
-    { value: 'scramjet', label: 'Scramjet', icon: <img src='/public/icons/scramjet.png' className="w-4 h-4"/> },
+    { value: 'uv', label: 'Ultraviolet', icon: <img src='/icons/ultraviolet.png' className="w-4 h-4"/> },
+    { value: 'rh', label: 'Rammerhead', icon: <img src='/icons/rammerhead.png' className="w-4 h-4"/> },
+    { value: 'scramjet', label: 'Scramjet', icon: <img src='/icons/scramjet.png' className="w-4 h-4"/> },
     //{ value: 'meteor', label: 'Meteor', icon: <img src='/public/icons/meteor.png' className="w-4 h-4"/> },
   ];
 

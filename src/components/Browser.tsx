@@ -6,6 +6,7 @@ import { useSettingsStore } from '../store/settings';
 import { Search } from 'lucide-react';
 import { useTheme } from '../hooks/useTheme';
 import { cn, encodeUrl, normalizeUrl } from '../lib/utils';
+import NewTab from './NewTab';
 
 declare global {
   interface Window {
@@ -22,9 +23,7 @@ export function Browser() {
   const isMac = navigator.userAgent.includes("Mac");
   const { tabs, activeTabId, updateTab, setLoading } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
-  const { currentTheme } = useTheme();
   const { searchEngine, service } = useSettingsStore();
-  const [inputs, setInputs] = useState<{ [key: string]: string }>({});
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   useEffect(() => {
@@ -49,43 +48,6 @@ export function Browser() {
       handleIframeLoad(iframeRef.current);
     }
   }, [activeTab?.url]);
-
-  const handleInputChange = (tabId: string, value: string) => {
-    setInputs((prevInputs) => ({
-      ...prevInputs,
-      [tabId]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!activeTabId || !inputs[activeTabId]) return;
-
-    let url = inputs[activeTabId];
-
-    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-      if (url.includes('.') && !url.includes(' ')) {
-        url = normalizeUrl(url);
-      } else {
-        const searchUrls = {
-          google: 'https://www.google.com/search?q=',
-          duckduckgo: 'https://duckduckgo.com/?q=',
-          bing: 'https://www.bing.com/search?q=',
-        };
-        url = `${searchUrls[searchEngine]}${encodeURIComponent(url)}`;
-      }
-    }
-
-    setLoading(activeTabId, true);
-
-    try {
-      const encodedUrl = await encodeUrl(url, searchEngine, service);
-
-      updateTab(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
-    } catch (error) {
-      console.error("Error Loading Web Content", error);
-    }
-  };
 
   const handleIframeLoad = async (iframe: HTMLIFrameElement) => {
     if (!iframeRef.current || !activeTabId) return;
@@ -116,20 +78,36 @@ export function Browser() {
         if (!iframeRef.current) return;
   
         const newIframeUrl = contentWindow.location.href;
+
+        if (!newIframeUrl) return;
   
         const newUrl = await window.chemical.decode(newIframeUrl);
+
+        if (!newUrl) return;
         
         if (
           newIframeUrl !== activeTab?.iframeUrl &&
           newUrl !== activeTab?.url
         ) {
-          updateTab(activeTabId, { url: newUrl, iframeUrl: newIframeUrl });
+          updateTab(activeTabId, { url: newUrl });
+          updateTab(activeTabId, { iframeUrl: newIframeUrl });
+        }
+      };
+
+      const checkIframeLoaded = () => {
+        if (
+          contentWindow.document &&
+          contentWindow.document.body &&
+          contentWindow.document.readyState === "complete"
+        ) {
+          setLoading(activeTabId, false);
         }
       };
   
       contentWindow.addEventListener("popstate", updateUrl);
       contentWindow.addEventListener("hashchange", updateUrl);
       iframe.addEventListener("load", updateUrl);
+      iframe.addEventListener("load", checkIframeLoaded);
   
     } catch (error) {
       console.error("Error updating iframe:", error);
@@ -141,7 +119,7 @@ export function Browser() {
 
     if (activeTab.url === 'about:blank') {
       return (
-        <div className="w-full h-full bg-crust flex items-center justify-center rounded-2xl relative overflow-hidden">
+        /*<div className="w-full h-full bg-crust flex items-center justify-center rounded-2xl relative overflow-hidden">
           <img className="new-tab-background" src={`${currentTheme?.wallpaper}`} alt="Background" />
           <div className="scale-up-animation w-full max-w-lg p-12 flex-col items-center z-10">
             <h1 className="zen-bold text-blue text-center mb-5 space_grotesk bg-base max-w-[6rem] mx-auto rounded-2xl">Zen</h1>
@@ -160,7 +138,8 @@ export function Browser() {
               </div>
             </form>
           </div>
-        </div>
+        </div>*/
+        <NewTab/>
       );
     }
 
@@ -173,8 +152,9 @@ export function Browser() {
         key={activeTab.id}
         ref={iframeRef}
         src={activeTab.iframeUrl}
-        className={cn("w-full h-full rounded-2xl border-none transition-opacity duration-300 z-50", activeTab.url === activeTab.title && "animate-pulse")}
+        className={cn("w-full h-full rounded-2xl border-none transition-opacity duration-300 z-50", activeTab.loading && "animate-pulse duration-1000")}
         title={activeTab.title}
+        aria-label={activeTab.title}
         onLoad={(e) => handleIframeLoad(e.target as HTMLIFrameElement)}
       />
     );

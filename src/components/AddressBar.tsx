@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ChevronLeft, ChevronRight, RotateCw, UnlockKeyhole, Settings, PanelLeft, LockKeyhole } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight, RotateCw, UnlockKeyhole, Settings, PanelLeft, LockKeyhole, Shield } from 'lucide-react';
 import { useBrowserStore } from '../store/browser';
 import { useSettingsStore } from '../store/settings';
 import { encodeUrl, normalizeUrl } from '../lib/utils';
 
 export function AddressBar() {
-  const isMac = navigator.userAgent.includes("Mac");
   const { searchEngine, sidebarVisible, toggleSidebar, service } = useSettingsStore();
-  const { tabs, activeTabId, updateTab, setLoading, addTab, setActiveTab } = useBrowserStore();
+  const { tabs, activeTabId, updateTab, setLoading, addTab, setActiveTab, goBack, goForward, addToHistory } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
   const [inputs, setInputs] = useState<{ [key: string]: string }>({});
   const [isSecure, setIsSecure] = useState<boolean | null>(null);
@@ -33,7 +32,7 @@ export function AddressBar() {
       setIsSecure(null);
       return;
     }
-  
+
     if (activeTab.url.startsWith('zen://') || activeTab.url === 'about:blank') {
       setInputs(prev => ({
         ...prev,
@@ -45,7 +44,7 @@ export function AddressBar() {
 
     try {
       const currentUrl = activeTab.url || activeTab.url;
-      
+
       if (currentUrl.startsWith('https://')) {
         setIsSecure(true);
       } else if (currentUrl.startsWith('http://')) {
@@ -61,15 +60,15 @@ export function AddressBar() {
   }, [activeTab?.url, activeTabId]);
 
   const handleInputChange = (tabId: string, value: string) => {
-    setInputs(prevInputs => ({
+    setInputs((prevInputs) => ({
       ...prevInputs,
       [tabId]: value,
     }));
-  };
+  }
 
   const handleBrowserUrl = (url: string) => {
     if (!url) return false;
-    
+
     const browserUrl = url.toLowerCase();
 
     switch (browserUrl) {
@@ -99,7 +98,7 @@ export function AddressBar() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeTabId) return;
+    if (!activeTabId || !inputs[activeTabId]) return;
 
     const inputUrl = inputs[activeTabId] || '';
     if (!inputUrl.trim()) return;
@@ -124,9 +123,10 @@ export function AddressBar() {
     }
 
     setLoading(activeTabId, true);
+    addToHistory(activeTabId, url);
 
     try {
-      const encodedUrl = await encodeUrl(url, searchEngine, window.chemical.getStore("service"));
+      const encodedUrl = await encodeUrl(url, searchEngine, service);
 
       console.log(encodedUrl);
 
@@ -136,11 +136,20 @@ export function AddressBar() {
     }
   };
 
+  const reload = async () => {
+    if (activeTab) {
+      console.log(activeTab.history);
+      const url = activeTab?.url;
+      const newIframeUrl = await encodeUrl(url, searchEngine, service);
+      updateTab(activeTabId, { url: url, iframeUrl: newIframeUrl });
+    }
+  };
+
   return (
     <div className="flex items-center gap-3 w-full mx-auto px-6 py-3">
       <div className="flex items-center gap-2">
         {!sidebarVisible && (
-          <button 
+          <button
             onClick={toggleSidebar}
             className="btn-icon"
             title="Show Sidebar"
@@ -149,21 +158,41 @@ export function AddressBar() {
             <PanelLeft className="w-5 h-5" />
           </button>
         )}
-        <button className="btn-icon xs:hidden sm:flex" aria-label="Back">
+        <button
+          onClick={goBack}
+          className="btn-icon xs:hidden sm:flex"
+          aria-label="Back"
+          title='Back'
+          disabled={!activeTab?.history?.length || activeTab.historyIndex === 0}
+        >
           <ChevronLeft className="w-5 h-5" />
         </button>
-        <button className="btn-icon xs:hidden sm:flex" aria-label="Forward">
+
+        <button
+          onClick={goForward}
+          className="btn-icon xs:hidden sm:flex"
+          aria-label="Forward"
+          title='Forward'
+          disabled={!activeTab?.history?.length || activeTab.historyIndex === (activeTab.history.length - 1)}
+        >
           <ChevronRight className="w-5 h-5" />
         </button>
-        <button className="btn-icon xs:hidden sm:flex" aria-label="Reload">
+
+        <button
+          className="btn-icon xs:hidden sm:flex"
+          aria-label="Reload"
+          title='Reload'
+          onClick={reload}
+        >
           <RotateCw className="w-4 h-4" />
         </button>
       </div>
-
       <form onSubmit={handleSubmit} className="flex-1">
         <div className="relative group active:scale-[0.99] transition-transform">
           <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
-            {isSecure === null ? (
+            {activeTab?.url?.startsWith('zen://') ? (
+              <Shield className="h-4 w-4 text-text group-focus-within:text-text" />
+            ) : isSecure === null ? (
               <Search className="h-4 w-4 text-text group-focus-within:text-text" />
             ) : isSecure ? (
               <LockKeyhole className="h-4 w-4 text-green-500 group-focus-within:text-green-400" />
@@ -181,11 +210,7 @@ export function AddressBar() {
           />
         </div>
       </form>
-      <button
-        onClick={handleSettingsClick}
-        className="btn-icon xs:hidden sm:flex"
-        aria-label="Settings"
-      >
+      <button onClick={handleSettingsClick} className="btn-icon xs:hidden sm:flex" aria-label="Settings">
         <Settings className="w-5 h-5 text-text" />
       </button>
     </div>
