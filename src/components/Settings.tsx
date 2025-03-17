@@ -41,21 +41,20 @@ export function Settings() {
   }, []);
 
   const serviceOptions = [
-    { value: 'uv', label: 'Ultraviolet', icon: <img src='/icons/ultraviolet.png' className="w-4 h-4"/> },
-    { value: 'rh', label: 'Rammerhead', icon: <img src='/icons/rammerhead.png' className="w-4 h-4"/> },
-    { value: 'scramjet', label: 'Scramjet', icon: <img src='/icons/scramjet.png' className="w-4 h-4"/> },
-    //{ value: 'meteor', label: 'Meteor', icon: <img src='/public/icons/meteor.png' className="w-4 h-4"/> },
+    { value: 'uv', label: 'Ultraviolet', icon: <img src='/icons/ultraviolet.png' className="w-4 h-4" alt='Ultraviolet' aria-label='Ultraviolet'/> },
+    { value: 'rh', label: 'Rammerhead', icon: <img src='/icons/rammerhead.png' className="w-4 h-4" alt='Rammerhead' aria-label='Rammerhead'/> },
+    { value: 'scramjet', label: 'Scramjet', icon: <img src='/icons/scramjet.png' className="w-4 h-4" alt='Scramjet' aria-label='Scramjet'/> },
   ];
 
   const transportOptions = [
-    { value: 'libcurl', label: 'Libcurl', icon: <Shield className="w-4 h-4" /> },
-    { value: 'epoxy', label: 'Epoxy', icon: <Shield className="w-4 h-4" /> },
+    { value: 'libcurl', label: 'Libcurl', icon: <Shield className="w-4 h-4" aria-label='Libcurl'/> },
+    { value: 'epoxy', label: 'Epoxy', icon: <Shield className="w-4 h-4" aria-label='Epoxy'/> },
   ];
 
   const searchEngineOptions = [
-    { value: 'google', label: 'Google', icon: <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" /> },
-    { value: 'duckduckgo', label: 'DuckDuckGo', icon: <img src="https://duckduckgo.com/favicon.ico" className="w-4 h-4" alt="DuckDuckGo" /> },
-    { value: 'bing', label: 'Bing', icon: <img src="https://www.bing.com/favicon.ico" className="w-4 h-4" alt="Bing" /> },
+    { value: 'google', label: 'Google', icon: <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" aria-label='Google'/> },
+    { value: 'duckduckgo', label: 'DuckDuckGo', icon: <img src="https://duckduckgo.com/favicon.ico" className="w-4 h-4" alt="DuckDuckGo" aria-label='Google'/> },
+    { value: 'bing', label: 'Bing', icon: <img src="https://www.bing.com/favicon.ico" className="w-4 h-4" alt="Bing" aria-label='Bing'/> },
   ];
 
   const handleServiceChange = (value: string) => {
@@ -87,10 +86,9 @@ export function Settings() {
         return (
           <div className="space-y-6">
             <div className="card">
-              <h3 className="h3-bold mb-4">Theme</h3>
-              <p className="base-regular mb-4">
-                Personalize your browser with a wide range of themes, each designed with a matching wallpaper for a cohesive look.
-                You can request more themes by contacting ZenDev <span className='text-subtext0'>@notzen3264</span> on Discord.
+              <h3 className="h3-bold mb-4 text-text">Theme</h3>
+              <p className="base-regular mb-4 text-text">
+                Personalize your browser with a wide range of themes, each designed with a matching wallpaper.
               </p>
               <ThemeSelector />
             </div>
@@ -100,8 +98,8 @@ export function Settings() {
         return (
           <div className="space-y-6">
             <div className="card">
-              <h3 className="h3-bold mb-4">Proxy Engine</h3>
-              <p className="base-regular mb-4">Select the backend proxy service that powers your browsing.
+              <h3 className="h3-bold mb-4 text-text">Proxy Engine</h3>
+              <p className="base-regular mb-4 text-text">Select the backend proxy service that powers your browsing.
                 Changing the service may make some websites perform better, support more web technologies, and may make your overall experience better.
               </p>
                 <Dropdown
@@ -111,8 +109,8 @@ export function Settings() {
                 />
             </div>
             <div className="card">
-              <h3 className="h3-bold mb-4">Proxy Transport</h3>
-              <p className="base-regular mb-4">
+              <h3 className="h3-bold mb-4 text-text">Proxy Transport</h3>
+              <p className="base-regular mb-4 text-text">
                 Configure how your connection is routed through the proxy.
                 Different transport methods may offer varying levels of speed, security, and compatibility.
                 This is an advanced feature, please do not change it if you do not no what you are doing.  
@@ -129,8 +127,8 @@ export function Settings() {
         return (
           <div className="space-y-6">
             <div className="card">
-              <h3 className="h3-bold mb-4">Search Engine</h3>
-              <p className="base-regular mb-4">
+              <h3 className="h3-bold mb-4 text-text">Search Engine</h3>
+              <p className="base-regular mb-4 text-text">
                 Customize your browsing experience by selecting your preferred search engine.
                 This setting changes which search provider is used when you enter queries in the search bar.
               </p>
@@ -146,8 +144,8 @@ export function Settings() {
         return (
           <div className="space-y-6">
             <div className="card">
-              <h3 className="h3-bold mb-4">Privacy Settings</h3>
-              <p className="base-regular mb-4">Manage your privacy preferences</p>
+              <h3 className="h3-bold mb-4 text-text">Privacy Settings</h3>
+              <p className="base-regular mb-4 text-text">Manage your privacy preferences</p>
               {/* Additional privacy content */}
             </div>
           </div>
@@ -156,7 +154,7 @@ export function Settings() {
         return (
           <div className="space-y-6">
             <div className="card">
-              <h3 className="h3-bold mb-4">About Zen</h3>
+              <h3 className="h3-bold mb-4 text-text">About Zen</h3>
               <p className="base-regular text-text mb-4">
                 Zen is a clean & modern web proxy browser interface with vertical tabs,
                 built with React and TypeScript.
@@ -177,50 +175,50 @@ export function Settings() {
               </div>
             </div>
             <div className="card">
-              <h3 className="h3-bold mb-4">Development Team</h3>
+              <h3 className="h3-bold mb-4 text-text">Development Team</h3>
               <p className="base-regular text-text">
                 Zen is completely open-source and is owned, maintained, and managed by the dedicated Zen Dev Team at Blackwell Labs.
                 All of the source code is available on the official GitHub repository.
               </p>
             </div>
             <div className="card">
-              <h3 className="h3-bold mb-4">Technologies</h3>
+              <h3 className="h3-bold mb-4 text-text">Technologies</h3>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">React</span>
+                  <span className="base-medium text-text">React</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">TypeScript</span>
+                  <span className="base-medium text-text">TypeScript</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Tailwind CSS</span>
+                  <span className="base-medium text-text">Tailwind CSS</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Chemical.js</span>
+                  <span className="base-medium text-text">Chemical.js</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Libcurl</span>
+                  <span className="base-medium text-text">Libcurl</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Epoxy</span>
+                  <span className="base-medium text-text">Epoxy</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Ultraviolet</span>
+                  <span className="base-medium text-text">Ultraviolet</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Rammerhead</span>
+                  <span className="base-medium text-text">Rammerhead</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-surface0 rounded-full"></div>
-                  <span className="base-medium">Scramjet</span>
+                  <span className="base-medium text-text">Scramjet</span>
                 </li>
               </ul>
             </div>
@@ -234,12 +232,12 @@ export function Settings() {
   return (
     <div className="frame max-w-5xl h-full mx-auto flex overflow-hidden rounded-2xl">
       <div className="settings-sidebar">
-        <h2 className="h2-bold mb-6 px-4">Settings</h2>
+        <h2 className="h2-bold mb-6 px-4 text-text">Settings</h2>
         {tabs.map((tab) => (
           <div
             key={tab.id}
             className={cn(
-              "settings-sidebar-item",
+              "settings-sidebar-item text-text",
               activeTab === tab.id
                 ? "settings-sidebar-item-active"
                 : "settings-sidebar-item-inactive"
@@ -247,7 +245,7 @@ export function Settings() {
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.icon}
-            <span className={cn("small-medium",
+            <span className={cn("small-medium text-text",
               activeTab === tab.id
               ? "settings-sidebar-item-active"
               : "settings-sidebar-item-inactive"
@@ -256,7 +254,7 @@ export function Settings() {
         ))}
       </div>
       <div className="flex-1 p-8 overflow-y-auto">
-        <h1 className="h1-bold mb-2">
+        <h1 className="h1-bold mb-2 text-text">
           {tabs.find((t) => t.id === activeTab)?.label}
         </h1>
         {/*<p className="base-regular text-subtext0 mb-6">

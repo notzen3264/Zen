@@ -17,7 +17,6 @@ const [app, listen] = new ChemicalServer({
     rammerhead: true,
     experimental: {
         scramjet: true,
-        meteor: true,
     }
 });
 
