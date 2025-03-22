@@ -110,7 +110,7 @@ export function Sidebar() {
     <div
       className={cn(
         "tab-sidebar",
-        sidebarVisible ? "w-[280px]" : "w-0 overflow-hidden"
+        sidebarVisible ? "w-full sm:w-[280px]" : "w-0 overflow-hidden"
       )}
     >
       <div className="h-full flex flex-col w-full text-text">

@@ -4,7 +4,7 @@ import { useBrowserStore } from '../store/browser';
 import { useSettingsStore } from '../store/settings';
 import { encodeUrl, normalizeUrl } from '../lib/utils';
 
-export function AddressBar() {
+export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetStateAction<number>> }) {
   const { searchEngine, sidebarVisible, toggleSidebar, service } = useSettingsStore();
   const { tabs, activeTabId, updateTab, setLoading, addTab, setActiveTab, goBack, goForward, addToHistory } = useBrowserStore();
   const activeTab = tabs.find(tab => tab.id === activeTabId);
@@ -122,6 +122,8 @@ export function AddressBar() {
       }
     }
 
+    console.log(url);
+
     setLoading(activeTabId, true);
     addToHistory(activeTabId, url);
 
@@ -131,6 +133,10 @@ export function AddressBar() {
       console.log(encodedUrl);
 
       updateTab(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
+
+      console.log(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
+
+      setUrlKey(prev => prev + 1);
     } catch (error) {
       console.error("Error Loading Web Content", error);
     }
@@ -138,10 +144,15 @@ export function AddressBar() {
 
   const reload = async () => {
     if (activeTab) {
-      console.log(activeTab.history);
+      setLoading(activeTabId, true);
+
       const url = activeTab?.url;
       const newIframeUrl = await encodeUrl(url, searchEngine, service);
+      const favicon = activeTab?.favicon
+
       updateTab(activeTabId, { url: url, iframeUrl: newIframeUrl });
+
+      setUrlKey(prev => prev + 1);
     }
   };
 
@@ -160,7 +171,7 @@ export function AddressBar() {
         )}
         <button
           onClick={goBack}
-          className="btn-icon xs:hidden sm:flex"
+          className="btn-icon hidden sm:flex"
           aria-label="Back"
           title='Back'
           disabled={!activeTab?.history?.length || activeTab.historyIndex === 0}
@@ -170,7 +181,7 @@ export function AddressBar() {
 
         <button
           onClick={goForward}
-          className="btn-icon xs:hidden sm:flex"
+          className="btn-icon hidden sm:flex"
           aria-label="Forward"
           title='Forward'
           disabled={!activeTab?.history?.length || activeTab.historyIndex === (activeTab.history.length - 1)}
@@ -179,7 +190,7 @@ export function AddressBar() {
         </button>
 
         <button
-          className="btn-icon xs:hidden sm:flex"
+          className="btn-icon hidden sm:flex"
           aria-label="Reload"
           title='Reload'
           onClick={reload}
@@ -210,7 +221,7 @@ export function AddressBar() {
           />
         </div>
       </form>
-      <button onClick={handleSettingsClick} className="btn-icon xs:hidden sm:flex" aria-label="Settings">
+      <button onClick={handleSettingsClick} className="btn-icon" aria-label="Settings">
         <Settings className="w-5 h-5 text-text" />
       </button>
     </div>

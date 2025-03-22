@@ -3,16 +3,12 @@ import { AddressBar } from './AddressBar';
 import { Settings } from './Settings';
 import { useState, useEffect, useRef } from 'react';
 import { useSettingsStore } from '../store/settings';
-import { Search } from 'lucide-react';
-import { useTheme } from '../hooks/useTheme';
-import { cn, encodeUrl, normalizeUrl } from '../lib/utils';
+import { cn, encodeUrl } from '../lib/utils';
 import NewTab from './NewTab';
 
 declare global {
   interface Window {
     chemical: any;
-    __uv$location: Location;
-    location: Location;
   }
   interface ContentWindow extends Window {
     __uv$location: Location;
@@ -25,6 +21,7 @@ export function Browser() {
   const activeTab = tabs.find(tab => tab.id === activeTabId);
   const { searchEngine, service } = useSettingsStore();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const [urlKey, setUrlKey] = useState(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.chemical) {
@@ -47,7 +44,7 @@ export function Browser() {
     if (iframeRef.current) {
       handleIframeLoad(iframeRef.current);
     }
-  }, [activeTab?.url]);
+  }, [activeTab?.url, urlKey]);
 
   const handleIframeLoad = async (iframe: HTMLIFrameElement) => {
     if (!iframeRef.current || !activeTabId) return;
@@ -71,29 +68,20 @@ export function Browser() {
       const favicon =
         contentWindow.document?.querySelector<HTMLLinkElement>("link[rel*='icon']")?.href ||
         faviconUrl;
-  
+
       updateTab(activeTabId, { title, favicon });
   
       const updateUrl = async () => {
         if (!iframeRef.current) return;
   
         const newIframeUrl = contentWindow.location.href;
-  
         if (!newIframeUrl) return;
   
         const newUrl = await window.chemical.decode(newIframeUrl);
-  
         if (!newUrl) return;
   
-        if (
-          newIframeUrl !== activeTab?.iframeUrl &&
-          newUrl !== activeTab?.url
-        ) {
-          updateTab(activeTabId, { url: newUrl });
-          updateTab(activeTabId, { iframeUrl: newIframeUrl });
-        } else {
-          updateTab(activeTabId, { url: newUrl });
-          updateTab(activeTabId, { iframeUrl: newIframeUrl });
+        if (newIframeUrl !== activeTab?.iframeUrl || newUrl !== activeTab?.url) {
+          updateTab(activeTabId, { url: newUrl, iframeUrl: newIframeUrl });
         }
       };
   
@@ -119,15 +107,13 @@ export function Browser() {
     } catch (error) {
       console.error("Error updating iframe:", error);
     }
-  };  
+  };
 
   const renderContent = () => {
     if (!activeTab) return null;
 
     if (activeTab.url === 'about:blank') {
-      return (
-        <NewTab />
-      );
+      return <NewTab />;
     }
 
     if (activeTab.url === 'zen://settings') {
@@ -136,7 +122,7 @@ export function Browser() {
 
     return (
       <iframe
-        key={activeTab.id}
+        key={`${activeTab.id}-${urlKey}`}
         ref={iframeRef}
         src={activeTab.iframeUrl}
         className={cn("w-full h-full rounded-2xl border-none transition-opacity duration-300 z-50", activeTab.loading && "animate-pulse duration-1000")}
@@ -150,7 +136,7 @@ export function Browser() {
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="h-20 flex items-center">
-        <AddressBar />
+        <AddressBar setUrlKey={setUrlKey} />
       </div>
       <div className="content-frame">
         {renderContent()}
