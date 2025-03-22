@@ -78,29 +78,37 @@ export function Browser() {
         if (!iframeRef.current) return;
   
         const newIframeUrl = contentWindow.location.href;
-
+  
         if (!newIframeUrl) return;
   
         const newUrl = await window.chemical.decode(newIframeUrl);
-
+  
         if (!newUrl) return;
-        
+  
         if (
           newIframeUrl !== activeTab?.iframeUrl &&
           newUrl !== activeTab?.url
         ) {
           updateTab(activeTabId, { url: newUrl });
           updateTab(activeTabId, { iframeUrl: newIframeUrl });
+        } else {
+          updateTab(activeTabId, { url: newUrl });
+          updateTab(activeTabId, { iframeUrl: newIframeUrl });
         }
       };
-
+  
       const checkIframeLoaded = () => {
         if (
           contentWindow.document &&
           contentWindow.document.body &&
-          contentWindow.document.readyState === "complete"
+          contentWindow.document.head &&
+          contentWindow.document.body.children.length > 0 &&
+          contentWindow.document.head.children.length > 0
         ) {
           setLoading(activeTabId, false);
+        } else {
+          console.warn("Iframe content is empty, reloading...");
+          iframe.src = iframe.src;
         }
       };
   
@@ -108,7 +116,6 @@ export function Browser() {
       contentWindow.addEventListener("hashchange", updateUrl);
       iframe.addEventListener("load", updateUrl);
       iframe.addEventListener("load", checkIframeLoaded);
-  
     } catch (error) {
       console.error("Error updating iframe:", error);
     }
@@ -119,27 +126,7 @@ export function Browser() {
 
     if (activeTab.url === 'about:blank') {
       return (
-        /*<div className="w-full h-full bg-crust flex items-center justify-center rounded-2xl relative overflow-hidden">
-          <img className="new-tab-background" src={`${currentTheme?.wallpaper}`} alt="Background" />
-          <div className="scale-up-animation w-full max-w-lg p-12 flex-col items-center z-10">
-            <h1 className="zen-bold text-blue text-center mb-5 space_grotesk bg-base max-w-[6rem] mx-auto rounded-2xl">Zen</h1>
-            <form onSubmit={handleSubmit} className="flex-1">
-              <div className="relative group active:scale-[0.95] transition-all">
-                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none z-10">
-                  <Search className="h-4 w-4 text-text invert-text group-focus-within:text-text" />
-                </div>
-                <input
-                  type="text"
-                  value={inputs[activeTabId || ''] || ''}
-                  onChange={(e) => handleInputChange(activeTabId || '', e.target.value)}
-                  className="input-new-tab-search"
-                  placeholder="Search the web freely with Zen..."
-                />
-              </div>
-            </form>
-          </div>
-        </div>*/
-        <NewTab/>
+        <NewTab />
       );
     }
 

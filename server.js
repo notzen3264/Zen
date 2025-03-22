@@ -31,12 +31,12 @@ app.use(compression());
 
 app.disable("x-powered-by");
 
-app.use(
+/*app.use(
     RateLimit({
         windowMs: 15 * 60 * 1000,
         max: 1000,
     })
-);
+);*/
 
 app.serveChemical();
 app.use(express.static(viteDistPath));

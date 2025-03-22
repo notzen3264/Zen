@@ -41,9 +41,9 @@ export function Settings() {
   }, []);
 
   const serviceOptions = [
-    { value: 'uv', label: 'Ultraviolet', icon: <img src='/icons/ultraviolet.png' className="w-4 h-4" alt='Ultraviolet' aria-label='Ultraviolet'/> },
-    { value: 'rh', label: 'Rammerhead', icon: <img src='/icons/rammerhead.png' className="w-4 h-4" alt='Rammerhead' aria-label='Rammerhead'/> },
-    { value: 'scramjet', label: 'Scramjet', icon: <img src='/icons/scramjet.png' className="w-4 h-4" alt='Scramjet' aria-label='Scramjet'/> },
+    { value: 'uv', label: 'Ultraviolet', icon: <img src='/icons/ultraviolet.png' className="w-4 h-4" alt='Ultraviolet' aria-label='Ultraviolet' title='Ultraviolet'/> },
+    { value: 'rh', label: 'Rammerhead', icon: <img src='/icons/rammerhead.png' className="w-4 h-4" alt='Rammerhead' aria-label='Rammerhead' title='Rammerhead'/> },
+    { value: 'scramjet', label: 'Scramjet', icon: <img src='/icons/scramjet.png' className="w-4 h-4" alt='Scramjet' aria-label='Scramjet' title='Scramjet'/> },
   ];
 
   const transportOptions = [
@@ -52,9 +52,9 @@ export function Settings() {
   ];
 
   const searchEngineOptions = [
-    { value: 'google', label: 'Google', icon: <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" aria-label='Google'/> },
-    { value: 'duckduckgo', label: 'DuckDuckGo', icon: <img src="https://duckduckgo.com/favicon.ico" className="w-4 h-4" alt="DuckDuckGo" aria-label='Google'/> },
-    { value: 'bing', label: 'Bing', icon: <img src="https://www.bing.com/favicon.ico" className="w-4 h-4" alt="Bing" aria-label='Bing'/> },
+    { value: 'google', label: 'Google', icon: <img src="https://www.google.com/favicon.ico" className="w-4 h-4" alt="Google" aria-label='Google' title='Google'/> },
+    { value: 'duckduckgo', label: 'DuckDuckGo', icon: <img src="https://duckduckgo.com/favicon.ico" className="w-4 h-4" alt="DuckDuckGo" aria-label='DuckDuckGo' title='DuckDuckGo'/> },
+    { value: 'bing', label: 'Bing', icon: <img src="https://www.bing.com/favicon.ico" className="w-4 h-4" alt="Bing" aria-label='Bing' title='Bing'/> },
   ];
 
   const handleServiceChange = (value: string) => {
@@ -73,11 +73,11 @@ export function Settings() {
   };
 
   const tabs: { id: SettingsTab; label: string; icon: React.ReactNode }[] = [
-    { id: 'appearance', label: 'Appearance', icon: <Palette className="w-5 h-5" /> },
-    { id: 'proxy', label: 'Proxy', icon: <Globe className="w-5 h-5" /> },
-    { id: 'search', label: 'Search', icon: <Search className="w-5 h-5" /> },
-    { id: 'privacy', label: 'Privacy', icon: <Shield className="w-5 h-5" /> },
-    { id: 'about', label: 'About', icon: <Info className="w-5 h-5" /> },
+    { id: 'appearance', label: 'Appearance', icon: <Palette className="w-5 h-5" aria-label='Appearance'/> },
+    { id: 'proxy', label: 'Proxy', icon: <Globe className="w-5 h-5" aria-label='Proxy'/> },
+    { id: 'search', label: 'Search', icon: <Search className="w-5 h-5" aria-label='Search'/> },
+    { id: 'privacy', label: 'Privacy', icon: <Shield className="w-5 h-5" aria-label='Privacy'/> },
+    { id: 'about', label: 'About', icon: <Info className="w-5 h-5" aria-label='About'/> },
   ];
 
   const renderTabContent = () => {
@@ -177,7 +177,7 @@ export function Settings() {
             <div className="card">
               <h3 className="h3-bold mb-4 text-text">Development Team</h3>
               <p className="base-regular text-text">
-                Zen is completely open-source and is owned, maintained, and managed by the dedicated Zen Dev Team at Blackwell Labs.
+                Zen is completely open-source and is owned, maintained, and managed by the dedicated Zen Development Team at Blackwell Labs.
                 All of the source code is available on the official GitHub repository.
               </p>
             </div>
@@ -243,6 +243,8 @@ export function Settings() {
                 : "settings-sidebar-item-inactive"
             )}
             onClick={() => setActiveTab(tab.id)}
+            aria-label={tab.label}
+            title={tab.label}
           >
             {tab.icon}
             <span className={cn("small-medium text-text",
