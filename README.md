@@ -1,6 +1,4 @@
-![title](https://i.ibb.co/dspWJqwc/image-29.png)
-
-<span style="font-family: 'Courier New', monospace;">Custom Font Example</span>
+![title](https://iili.io/3AtyWb9.png)
 
 <h3 align="center">The minimal and peaceful browser</h3>
 
