@@ -2,7 +2,7 @@
 
 <h3 align="center">The minimal and peaceful browser</h3>
 
-![preview](https://freeimage.host/i/3AtA6Gf)
+![preview](https://iili.io/3AtA6Gf.md.jpg)
 
 > [!IMPORTANT]
 > If you fork this repo PLEASE consider leaving us a star. Thank you so much!
