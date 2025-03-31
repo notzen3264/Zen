@@ -1,5 +1,7 @@
 ![title](https://i.ibb.co/dspWJqwc/image-29.png)
 
+<span style="font-family: 'Courier New', monospace;">Custom Font Example</span>
+
 <h3 align="center">The minimal and peaceful browser</h3>
 
 ![preview](https://iili.io/3AtA6Gf.jpg)
@@ -54,5 +56,3 @@ Thank you to the following people that have assisted and contributed to Zen.
 <a href="https://github.com/noten3264/Zen/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=notzen3264/Zen" />
 </a>
-
-[Edit](https://bolt.new/github.com/CyMasterDev/Zen-Site)
