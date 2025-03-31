@@ -1,4 +1,4 @@
-/*![title](https://i.ibb.co/dspWJqwc/image-29.png)*/
+![title](https://i.ibb.co/dspWJqwc/image-29.png)
 
 <h3 align="center">The minimal and peaceful browser</h3>
 
