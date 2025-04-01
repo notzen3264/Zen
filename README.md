@@ -12,14 +12,14 @@
 - Sleek and modern collapsible tab system & sidebar (reordering, close, add)
 - Settings internal page (zen://settings)
 - Theming
-- Proxy service switching
-- Proxy transport switching
+- Service switching
+- Transport switching
 - Search engine switching
 - Addressbar with navigation controls
 - Shortcuts & Bookmarks (soon)
 - Tab Cloaking (soon)
 - about:blank and blob: cloaking (soon)
-- if you think I'm going to add apps and then womp womp just search up some yourself you skiddy skid.
+- if you think I'm going to add apps and semag then womp womp just search up some yourself you skiddy skid.
 
 ## Deployment Guide
 > [!WARNING]
