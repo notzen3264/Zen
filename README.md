@@ -29,7 +29,7 @@ To initalise Zen on your server run the following commands:
 git clone https://github.com/notzen3264/Zen.git
 ```
 ```
-cd Ambient
+cd Zen
 ```
 ```
 npm i
