@@ -17,6 +17,9 @@
 - Search engine switching
 - Addressbar with navigation controls
 - Shortcuts & Bookmarks (soon)
+- Tab Cloaking (soon)
+- about:blank and blob: cloaking (soon)
+- if you think I'm going to add apps and games then womp womp just search up some games yourself you skiddy skid.
 
 ## Deployment Guide
 > [!WARNING]
