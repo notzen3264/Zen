@@ -19,7 +19,7 @@
 - Shortcuts & Bookmarks (soon)
 - Tab Cloaking (soon)
 - about:blank and blob: cloaking (soon)
-- if you think I'm going to add apps and semag then womp womp just search up some yourself you skiddy skid.
+- if you think I'm going to add apps and entertainment then womp womp just search up some yourself you skiddy skid.
 
 ## Deployment Guide
 > [!WARNING]
