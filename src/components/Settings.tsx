@@ -99,7 +99,8 @@ export function Settings() {
           <div className="space-y-6">
             <div className="card">
               <h3 className="h3-bold mb-4 text-text">Proxy Engine</h3>
-              <p className="base-regular mb-4 text-text">Select the backend proxy service that powers your browsing.
+              <p className="base-regular mb-4 text-text">
+                Select the backend proxy service that powers your browsing.
                 Changing the service may make some websites perform better, support more web technologies, and may make your overall experience better.
               </p>
                 <Dropdown
@@ -230,7 +231,7 @@ export function Settings() {
   };
 
   return (
-    <div className="frame max-w-5xl h-full mx-auto flex overflow-hidden rounded-2xl">
+    <div className="frame max-w-5xl h-full mx-auto flex overflow-hidden">
       <div className="settings-sidebar">
         <h2 className="h2-bold mb-6 px-4 text-text">Settings</h2>
         {tabs.map((tab) => (
@@ -247,7 +248,7 @@ export function Settings() {
             title={tab.label}
           >
             {tab.icon}
-            <span className={cn("small-medium text-text",
+            <span className={cn("small-medium text-text bg-transparent",
               activeTab === tab.id
               ? "settings-sidebar-item-active"
               : "settings-sidebar-item-inactive"
@@ -259,9 +260,6 @@ export function Settings() {
         <h1 className="h1-bold mb-2 text-text">
           {tabs.find((t) => t.id === activeTab)?.label}
         </h1>
-        {/*<p className="base-regular text-subtext0 mb-6">
-          Customize your browsing experience
-        </p>*/}
         {renderTabContent()}
       </div>
     </div>

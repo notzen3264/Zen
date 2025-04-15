@@ -46,8 +46,8 @@ export default function NewTab() {
     };
 
     return (
-        <div className="w-full h-full bg-crust flex items-center justify-center rounded-2xl relative overflow-hidden">
-            <img className="new-tab-background" src={`${currentTheme?.wallpaper}`} alt="Wallpaper" />
+        <div className="w-full h-full bg-crust flex items-center justify-center relative overflow-hidden">
+            <img className="new-tab-wallpaper" src={`${currentTheme?.wallpaper}`} alt={`${currentTheme?.name} Wallpaper`} title={`${currentTheme?.name} Wallpaper`} aria-label={`${currentTheme?.name} Wallpaper`}/>
             <div className="scale-up-animation w-full max-w-lg p-12 flex-col items-center z-10">
                 <h1 className="zen-bold text-blue text-center mb-5 space_grotesk bg-base max-w-[6rem] mx-auto rounded-2xl">Zen</h1>
                 <form onSubmit={handleSubmit} className="flex-1">

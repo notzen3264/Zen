@@ -64,9 +64,9 @@ function SortableTab({ tab, activeTabId, onRemove, onClick }: any) {
             onError={() => setFaviconError(true)}
           />
         ) : tab.url === "zen://settings" ? (
-          <Settings className="w-4 h-4 icon" aria-label="Settings"/>
+          <Settings className="w-4 h-4 icon" aria-label="Settings" />
         ) : (
-          <Globe className="w-4 h-4 icon" aria-label="Globe"/>
+          <Globe className="w-4 h-4 icon" aria-label="Globe" />
         )}
       </div>
       <span className="tab-item-title" title={tab.title || tab.url} aria-label={tab.title || tab.url}>
@@ -109,12 +109,12 @@ export function Sidebar() {
   return (
     <div
       className={cn(
-        "tab-sidebar",
-        sidebarVisible ? "w-full sm:w-[280px]" : "w-0 overflow-hidden"
+        "tab-sidebar-container",
+        sidebarVisible ? "sidebar-expanded" : "sidebar-collapsed"
       )}
     >
-      <div className="h-full flex flex-col w-full text-text">
-        <div className="pr-3 pb-3 pt-5 pl-3 flex items-center justify-between gap-1">
+      <div className={cn("tab-sidebar", sidebarVisible ? "opacity-100" : "opacity-0")}>
+        <div className="tab-sidebar-actions">
           <button
             onClick={toggleSidebar}
             className="btn-icon w-12 h-12"
@@ -130,11 +130,11 @@ export function Sidebar() {
             title="New Tab"
           >
             <Plus className="w-6 h-6 text-text" />
-            <p className="base-semibold">New Tab</p>
+            <p className="base-semibold line-clamp-1">New Tab</p>
           </button>
         </div>
 
-        <div className="h-full overflow-y-auto px-3 space-y-2 pb-6 min-w-0">
+        <div className="h-full overflow-y-auto overflow-x-hidden px-3 space-y-2 pb-6 min-w-0">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={tabs} strategy={verticalListSortingStrategy}>
               {tabs.map((tab) => (

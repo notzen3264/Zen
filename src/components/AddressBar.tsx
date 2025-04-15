@@ -11,6 +11,10 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
   const [inputs, setInputs] = useState<{ [key: string]: string }>({});
   const [isSecure, setIsSecure] = useState<boolean | null>(null);
 
+  // Calculate navigation states locally
+  const canGoBack = activeTab?.history && activeTab.historyIndex > 0;
+  const canGoForward = activeTab?.history && activeTab.historyIndex < (activeTab.history.length - 1);
+
   const handleSettingsClick = () => {
     const settingsTab = tabs.find(tab => tab.url === 'zen://settings');
     if (settingsTab) {
@@ -150,14 +154,14 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
       const newIframeUrl = await encodeUrl(url, searchEngine, service);
       const favicon = activeTab?.favicon
 
-      updateTab(activeTabId, { url: url, iframeUrl: newIframeUrl });
+      updateTab(activeTabId, { url: url, iframeUrl: newIframeUrl, favicon });
 
       setUrlKey(prev => prev + 1);
     }
   };
 
   return (
-    <div className="flex items-center gap-3 w-full mx-auto px-6 py-3">
+    <div className="flex items-center gap-3 w-full mx-auto px-6 py-3 overflow-hidden">
       <div className="flex items-center gap-2">
         {!sidebarVisible && (
           <button
@@ -174,7 +178,7 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
           className="btn-icon hidden sm:flex"
           aria-label="Back"
           title='Back'
-          disabled={!activeTab?.history?.length || activeTab.historyIndex === 0}
+          disabled={!canGoBack}
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
@@ -184,7 +188,7 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
           className="btn-icon hidden sm:flex"
           aria-label="Forward"
           title='Forward'
-          disabled={!activeTab?.history?.length || activeTab.historyIndex === (activeTab.history.length - 1)}
+          disabled={!canGoForward}
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -221,7 +225,12 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
           />
         </div>
       </form>
-      <button onClick={handleSettingsClick} className="btn-icon" aria-label="Settings">
+      <button 
+        onClick={handleSettingsClick}
+        className="btn-icon"
+        aria-label="Settings"
+        title='Settings'
+      >
         <Settings className="w-5 h-5 text-text" />
       </button>
     </div>

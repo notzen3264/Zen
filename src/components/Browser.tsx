@@ -1,7 +1,7 @@
 import { useBrowserStore } from '../store/browser';
 import { AddressBar } from './AddressBar';
 import { Settings } from './Settings';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useSettingsStore } from '../store/settings';
 import { cn, encodeUrl } from '../lib/utils';
 import NewTab from './NewTab';
@@ -16,18 +16,19 @@ declare global {
 }
 
 export function Browser() {
-  const isMac = navigator.userAgent.includes("Mac");
   const { tabs, activeTabId, updateTab, setLoading } = useBrowserStore();
-  const activeTab = tabs.find(tab => tab.id === activeTabId);
   const { searchEngine, service } = useSettingsStore();
-  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const iframeRefs = useRef<{ [key: string]: HTMLIFrameElement | null }>({});
+  const loadedUrls = useRef<{ [key: string]: string }>({});
+  const cleanupRefs = useRef<{ [key: string]: () => void }>({});
+  const updatingRefs = useRef<{ [key: string]: boolean }>({});
   const [urlKey, setUrlKey] = useState(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.chemical) {
       const defaults = {
         service: 'uv',
-        proxyTransport: 'libcurl',
+        transport: 'libcurl',
         searchEngine: 'google',
         bookmarks: '[]',
       };
@@ -40,107 +41,177 @@ export function Browser() {
     }
   }, []);
 
-  useEffect(() => {
-    if (iframeRef.current) {
-      handleIframeLoad(iframeRef.current);
-    }
-  }, [activeTab?.url, urlKey]);
+  const handleIframeLoad = useCallback((tabId: string, iframe: HTMLIFrameElement) => {
+    if (!iframe) return;
 
-  const handleIframeLoad = async (iframe: HTMLIFrameElement) => {
-    if (!iframeRef.current || !activeTabId) return;
-  
-    const contentWindow = iframeRef.current.contentWindow as ContentWindow;
+    const contentWindow = iframe.contentWindow as ContentWindow;
     if (!contentWindow) return;
-  
-    try {
-      let origin = activeTab?.url;
-      if (!origin || typeof origin !== "string") return;
-  
-      try {
-        origin = new URL(origin).origin;
-      } catch (e) {
-        console.error("Invalid URL:", origin);
-        return;
-      }
-  
-      const faviconUrl = await encodeUrl(`${origin}/favicon.ico`, searchEngine, service);
-      const title = contentWindow.document?.title;
-      const favicon =
-        contentWindow.document?.querySelector<HTMLLinkElement>("link[rel*='icon']")?.href ||
-        faviconUrl;
 
-      updateTab(activeTabId, { title, favicon });
-  
-      const updateUrl = async () => {
-        if (!iframeRef.current) return;
-  
-        const newIframeUrl = contentWindow.location.href;
-        if (!newIframeUrl) return;
-  
-        const newUrl = await window.chemical.decode(newIframeUrl);
-        if (!newUrl) return;
-  
-        if (newIframeUrl !== activeTab?.iframeUrl || newUrl !== activeTab?.url) {
-          updateTab(activeTabId, { url: newUrl, iframeUrl: newIframeUrl });
-        }
-      };
-  
-      const checkIframeLoaded = () => {
-        if (
+    cleanupRefs.current[tabId]?.();
+
+    const updateUrl = async () => {
+      try {
+        const rawUrl = contentWindow.location.href;
+        const decodedUrl = await window.chemical.decode(rawUrl);
+        updateTab(tabId, { url: decodedUrl, iframeUrl: rawUrl });
+        loadedUrls.current[tabId] = rawUrl;
+        updatingRefs.current[tabId] = true;
+      } catch (error) {
+        console.error('Failed to decode and update URL:', error);
+      }
+    };
+
+    const updateMetadata = async () => {
+      try {
+        const rawUrl = contentWindow.location.href;
+        const decodedUrl = await window.chemical.decode(rawUrl);
+        const urlObj = new URL(decodedUrl);
+
+        const faviconUrl = await encodeUrl(`${urlObj.origin}/favicon.ico`, searchEngine, service);
+        const documentTitle = contentWindow.document?.title || '';
+        const docFavicon = contentWindow.document?.querySelector<HTMLLinkElement>("link[rel*='icon']")?.href;
+        const favicon = docFavicon || faviconUrl;
+
+        updateTab(tabId, {
+          title: documentTitle,
+          favicon: favicon,
+        });
+      } catch (error) {
+        console.error('Failed to update metadata:', error);
+      } finally {
+        const documentAvailable =
           contentWindow.document &&
+          contentWindow.document.readyState === 'complete' &&
           contentWindow.document.body &&
-          contentWindow.document.head &&
-          contentWindow.document.body.children.length > 0 &&
-          contentWindow.document.head.children.length > 0
-        ) {
-          setLoading(activeTabId, false);
-        } else {
-          console.warn("Iframe content is empty, reloading...");
-          iframe.src = iframe.src;
-        }
+          contentWindow.document.body.childElementCount > 0;
+
+        setLoading(tabId, !documentAvailable ? true : false);
+        updatingRefs.current[tabId] = false;
+      }
+    };
+
+    const handleNavigation = (initial = false) => {
+      if (!initial) setLoading(tabId, true);
+      updateUrl().then(() => {
+        updateMetadata();
+      });
+    };
+
+    const patchHistory = () => {
+      const original = {
+        pushState: contentWindow.history.pushState,
+        replaceState: contentWindow.history.replaceState,
       };
-  
-      contentWindow.addEventListener("popstate", updateUrl);
-      contentWindow.addEventListener("hashchange", updateUrl);
-      iframe.addEventListener("load", updateUrl);
-      iframe.addEventListener("load", checkIframeLoaded);
-    } catch (error) {
-      console.error("Error updating iframe:", error);
-    }
-  };
+
+      contentWindow.history.pushState = function (...args) {
+        const result = original.pushState.apply(this, args as any);
+        handleNavigation();
+        return result;
+      };
+
+      contentWindow.history.replaceState = function (...args) {
+        const result = original.replaceState.apply(this, args as any);
+        handleNavigation();
+        return result;
+      };
+
+      return () => {
+        contentWindow.history.pushState = original.pushState;
+        contentWindow.history.replaceState = original.replaceState;
+      };
+    };
+
+    const handlePopState = () => handleNavigation();
+    const handleHashChange = () => handleNavigation();
+    const handleClick = (event: MouseEvent) => {
+      if (event.target instanceof HTMLAnchorElement) {
+        handleNavigation();
+      }
+    };
+
+    const cleanupHistory = patchHistory();
+
+    contentWindow.addEventListener('popstate', handlePopState);
+    contentWindow.addEventListener('hashchange', handleHashChange);
+    contentWindow.addEventListener('click', handleClick);
+
+    const loadHandler = () => handleNavigation(true);
+    iframe.addEventListener('load', loadHandler);
+    iframe.addEventListener('error', () => {
+      setLoading(tabId, false);
+      updatingRefs.current[tabId] = false;
+    });
+
+    cleanupRefs.current[tabId] = () => {
+      cleanupHistory();
+      contentWindow.removeEventListener('popstate', handlePopState);
+      contentWindow.removeEventListener('hashchange', handleHashChange);
+      contentWindow.removeEventListener('click', handleClick);
+      iframe.removeEventListener('load', loadHandler);
+      iframe.removeEventListener('error', () => {
+        setLoading(tabId, false);
+        updatingRefs.current[tabId] = false;
+      });
+    };
+
+    handleNavigation(true);
+  }, [updateTab, setLoading, searchEngine, service]);
 
   const renderContent = () => {
-    if (!activeTab) return null;
+    return tabs.map((tab) => {
+      const isActive = tab.id === activeTabId;
+      const iframeUrl = tab.iframeUrl;
+      const isUpdating = updatingRefs.current[tab.id];
 
-    if (activeTab.url === 'about:blank') {
-      return <NewTab />;
-    }
-
-    if (activeTab.url === 'zen://settings') {
-      return <Settings />;
-    }
-
-    return (
-      <iframe
-        key={`${activeTab.id}-${urlKey}`}
-        ref={iframeRef}
-        src={activeTab.iframeUrl}
-        className={cn("w-full h-full rounded-2xl border-none transition-opacity duration-300 z-50", activeTab.loading && "animate-pulse duration-1000")}
-        title={activeTab.title}
-        aria-label={activeTab.title}
-        onLoad={(e) => handleIframeLoad(e.target as HTMLIFrameElement)}
-      />
-    );
+      return (
+        <div
+          key={tab.id}
+          className={cn(
+            'absolute inset-0 transition-opacity duration-200',
+            isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+          )}
+        >
+          {tab.url === 'about:blank' ? (
+            <NewTab />
+          ) : tab.url === 'zen://settings' ? (
+            <Settings />
+          ) : (
+            <iframe
+              key={tab.id}
+              ref={(el) => {
+                iframeRefs.current[tab.id] = el;
+                if (el && isActive) {
+                  // set our src if we are not currently updating and if this url has not already been loaded. THIS FIXES THE DOUBLE LOADING ISSUE WOOOOOO
+                  const alreadyLoaded = loadedUrls.current[tab.id] === iframeUrl;
+                  if (!alreadyLoaded && !isUpdating) {
+                    el.src = iframeUrl;
+                    loadedUrls.current[tab.id] = iframeUrl;
+                  }
+                }
+              }}
+              className="w-full h-full rounded-2xl border-none"
+              onLoad={(e) =>
+                isActive && handleIframeLoad(tab.id, e.target as HTMLIFrameElement)
+              }
+              onError={() => {
+                setLoading(tab.id, false);
+                updatingRefs.current[tab.id] = false;
+              }}
+              title={tab.title}
+              style={{ visibility: isActive ? 'visible' : 'hidden' }}
+            />
+          )}
+        </div>
+      );
+    });
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden">
+    <div className="flex flex-1 flex-col-reverse sm:flex-col overflow-hidden">
       <div className="h-20 flex items-center">
         <AddressBar setUrlKey={setUrlKey} />
       </div>
-      <div className="content-frame">
-        {renderContent()}
-      </div>
+      <div className="content-frame">{renderContent()}</div>
     </div>
   );
 }
