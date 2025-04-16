@@ -25,7 +25,6 @@ export function useTheme() {
     const theme = themes.find(t => t.id === themeId) || themes[0];
     setCurrentTheme(theme);
     
-    // Apply theme CSS variables
     document.documentElement.style.setProperty('--theme-crust', theme.colors.crust);
     document.documentElement.style.setProperty('--theme-base', theme.colors.base);
     document.documentElement.style.setProperty('--theme-surface0', theme.colors.surface0);

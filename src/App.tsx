@@ -3,7 +3,7 @@ import { Browser } from './components/Browser';
 
 function App() {
   return (
-    <div className="flex h-screen transition-colors text-text bg-crust">
+    <div className="root-container">
       <Sidebar />
       <Browser />
     </div>

@@ -134,7 +134,7 @@ export function Sidebar() {
           </button>
         </div>
 
-        <div className="h-full overflow-y-auto overflow-x-hidden px-3 space-y-2 pb-6 min-w-0">
+        <div className="tab-list-container">
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={tabs} strategy={verticalListSortingStrategy}>
               {tabs.map((tab) => (

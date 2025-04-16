@@ -30,23 +30,23 @@
 
 @layer components {
   .btn-icon {
-    @apply w-10 h-10 text-text bg-base rounded-full hover:bg-surface0 flex items-center justify-center transition-all active:scale-90 backdrop-blur-lg active:bg-surface0;
+    @apply w-10 h-10 text-text bg-base rounded-full hover:bg-surface0 flex items-center justify-center transition-all active:scale-90 backdrop-blur-lg active:bg-surface0 outline-none;
   }
 
   .btn-primary {
-    @apply px-4 py-2 text-text rounded-lg bg-blue hover:bg-blue transition-all active:scale-95;
+    @apply px-4 py-2 text-text rounded-lg bg-blue hover:bg-blue transition-all active:scale-95 outline-none;
   }
 
   .btn-secondary {
-    @apply px-4 py-2 text-text rounded-lg bg-surface0 hover:bg-surface0 transition-all active:scale-95;
+    @apply px-4 py-2 text-text rounded-lg bg-surface0 hover:bg-surface0 transition-all active:scale-95 outline-none;
   }
 
   .btn-add-new-tab {
-    @apply h-12 bg-base rounded-full min-w-0 flex-grow transition-all hover:bg-surface0 flex items-center gap-2 px-3 text-text active:scale-95;
+    @apply h-12 bg-base rounded-full min-w-0 flex-grow transition-all hover:bg-surface0 flex items-center gap-2 px-3 text-text active:scale-95 outline-none;
   }
 
   .btn-close-tab {
-    @apply opacity-0 hover:opacity-100 hover:bg-text/20 p-1.5 rounded-full transition-all hover:scale-110 active:scale-90 flex-shrink-0;
+    @apply opacity-0 hover:opacity-100 hover:bg-text/20 p-1.5 rounded-full transition-all hover:scale-110 active:scale-90 flex-shrink-0 outline-none;
   }
 
   .icon {
@@ -98,8 +98,24 @@
     mask-image: linear-gradient(to left, transparent, black 25px);
   }
 
-  .content-frame {
-    @apply h-[calc(100vh-5rem)] rounded-b-2xl sm:rounded-2xl overflow-hidden m-0 sm:m-2 sm:mt-0 relative;
+  .content-window {
+    @apply h-[calc(100vh-4rem)] rounded-b-2xl sm:rounded-2xl overflow-hidden m-0 sm:m-2 sm:mt-0 relative;
+  }
+
+  .tab-window {
+    @apply absolute inset-0 transition-opacity duration-200;
+  }
+
+  .tab-window-active {
+    @apply opacity-100 z-10;
+  }
+
+  .tab-window-inactive {
+    @apply opacity-0 z-0 pointer-events-none;
+  }
+
+  .iframe {
+    @apply w-full h-full rounded-2xl border-none;
   }
 
   .tab-sidebar-container {
@@ -112,6 +128,10 @@
 
   .tab-sidebar-actions {
     @apply pr-3 pb-3 pt-5 pl-3 flex items-center justify-between gap-[0.375rem];
+  }
+
+  .tab-list-container {
+    @apply h-full overflow-y-auto overflow-x-hidden px-3 space-y-2 pb-6 min-w-0;
   }
 
   .settings-sidebar {
@@ -156,6 +176,18 @@
   
   .new-tab-wallpaper {
     @apply object-cover w-full h-full z-0 absolute;
+  }
+
+  .browser-container {
+    @apply flex flex-1 flex-col-reverse sm:flex-col overflow-hidden;
+  }
+
+  .addressbar-container {
+    @apply h-16 flex items-center py-1;
+  }
+
+  .root-container {
+    @apply flex h-screen transition-colors text-text bg-crust;
   }
 }
 
@@ -271,7 +303,7 @@
 }
 
 .frame {
-  max-height: calc(100vh - 5rem);
+  max-height: calc(100vh - 4rem);
 }
 
 .space_grotesk {

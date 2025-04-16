@@ -67,10 +67,14 @@ export function Browser() {
         const decodedUrl = await window.chemical.decode(rawUrl);
         const urlObj = new URL(decodedUrl);
 
-        const faviconUrl = await encodeUrl(`${urlObj.origin}/favicon.ico`, searchEngine, service);
+        const uvFaviconUrl = await encodeUrl(`${contentWindow.__uv$location.origin}/favicon.ico`, searchEngine, service);
+        const constructedFaviconUrl = await encodeUrl(`${urlObj.origin}/favicon.ico`, searchEngine, service);
+        const docFavicon = await encodeUrl(`${contentWindow.document?.querySelector<HTMLLinkElement>("link[rel*='icon']")?.href}`, searchEngine, service);
+
+        console.log(`UV Favicon: ${uvFaviconUrl}`, `Constrcuted ${constructedFaviconUrl}`, `doc: ${docFavicon}`);
+
         const documentTitle = contentWindow.document?.title || '';
-        const docFavicon = contentWindow.document?.querySelector<HTMLLinkElement>("link[rel*='icon']")?.href;
-        const favicon = docFavicon || faviconUrl;
+        const favicon = docFavicon || constructedFaviconUrl || uvFaviconUrl;
 
         updateTab(tabId, {
           title: documentTitle,
@@ -167,8 +171,8 @@ export function Browser() {
         <div
           key={tab.id}
           className={cn(
-            'absolute inset-0 transition-opacity duration-200',
-            isActive ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
+            'tab-window',
+            isActive ? 'tab-window-active' : 'tab-window-inactive'
           )}
         >
           {tab.url === 'about:blank' ? (
@@ -189,7 +193,7 @@ export function Browser() {
                   }
                 }
               }}
-              className="w-full h-full rounded-2xl border-none"
+              className="iframe"
               onLoad={(e) =>
                 isActive && handleIframeLoad(tab.id, e.target as HTMLIFrameElement)
               }
@@ -207,11 +211,11 @@ export function Browser() {
   };
 
   return (
-    <div className="flex flex-1 flex-col-reverse sm:flex-col overflow-hidden">
-      <div className="h-20 flex items-center">
+    <div className="browser-container">
+      <div className="addressbar-container">
         <AddressBar setUrlKey={setUrlKey} />
       </div>
-      <div className="content-frame">{renderContent()}</div>
+      <div className="content-window">{renderContent()}</div>
     </div>
   );
 }

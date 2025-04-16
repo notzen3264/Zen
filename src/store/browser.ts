@@ -117,7 +117,7 @@ export const useBrowserStore = create<BrowserState>((set, get) => ({
         const newTab = createNewTab();
         return { 
           tabs: [newTab], 
-          activeTabId: newTab.id, // Make sure activeTabId is set for the first tab
+          activeTabId: newTab.id,
         };
       }
       return state;

@@ -11,7 +11,6 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
   const [inputs, setInputs] = useState<{ [key: string]: string }>({});
   const [isSecure, setIsSecure] = useState<boolean | null>(null);
 
-  // Calculate navigation states locally
   const canGoBack = activeTab?.history && activeTab.historyIndex > 0;
   const canGoForward = activeTab?.history && activeTab.historyIndex < (activeTab.history.length - 1);
 
@@ -126,19 +125,13 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
       }
     }
 
-    console.log(url);
-
     setLoading(activeTabId, true);
     addToHistory(activeTabId, url);
 
     try {
       const encodedUrl = await encodeUrl(url, searchEngine, service);
 
-      console.log(encodedUrl);
-
       updateTab(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
-
-      console.log(activeTabId, { url, iframeUrl: encodedUrl, title: url, favicon: '' });
 
       setUrlKey(prev => prev + 1);
     } catch (error) {
@@ -152,7 +145,7 @@ export function AddressBar({ setUrlKey }: { setUrlKey: React.Dispatch<React.SetS
 
       const url = activeTab?.url;
       const newIframeUrl = await encodeUrl(url, searchEngine, service);
-      const favicon = activeTab?.favicon
+      const favicon = activeTab?.favicon;
 
       updateTab(activeTabId, { url: url, iframeUrl: newIframeUrl, favicon });
 
